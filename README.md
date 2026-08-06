@@ -31,11 +31,11 @@ npm run check
 Expo inlines variables beginning with `EXPO_PUBLIC_` into the application bundle. Copy
 `.env.example` to `.env.local` and configure:
 
-| Variable | Purpose |
-| --- | --- |
-| `EXPO_PUBLIC_SUPABASE_URL` | Public URL for the Supabase project. |
+| Variable                        | Purpose                                                                              |
+| ------------------------------- | ------------------------------------------------------------------------------------ |
+| `EXPO_PUBLIC_SUPABASE_URL`      | Public URL for the Supabase project.                                                 |
 | `EXPO_PUBLIC_SUPABASE_ANON_KEY` | Supabase publishable or legacy anonymous key. This must never be a service-role key. |
-| `EXPO_PUBLIC_API_BASE_URL` | Trusted application backend or Supabase Edge Functions base URL. |
+| `EXPO_PUBLIC_API_BASE_URL`      | Trusted application backend or Supabase Edge Functions base URL.                     |
 
 OpenAI must be called by the trusted backend identified by `EXPO_PUBLIC_API_BASE_URL`. **Never
 store an OpenAI API key in the application or in an `EXPO_PUBLIC_` variable.** The API service in
@@ -46,8 +46,9 @@ store an OpenAI API key in the application or in an `EXPO_PUBLIC_` variable.** T
 ```text
 .
 ├── app/                    # Expo Router routes and navigation layouts
+│   ├── (tabs)/             # Bottom tabs and all Sprint 1.2 product screens
 │   ├── _layout.tsx         # Root navigation and global visual theme
-│   └── index.tsx           # Intentionally empty foundation route
+│   └── index.tsx           # Redirect into the application shell
 ├── src/
 │   ├── components/         # Shared, feature-agnostic UI components
 │   ├── config/             # Validated runtime configuration
@@ -76,6 +77,18 @@ Consume tokens from `@/theme` instead of embedding colors or spacing values in c
 keeps React Navigation and application UI visually consistent and makes future theming changes
 centralized.
 
+## Sprint 1.2: navigation and application shell
+
+Sprint 1.2 introduces a complete Expo Router application shell with an adaptive, safe-area-aware
+bottom tab bar. Dashboard, Ask SAC AI, Watchlist, Portfolio, Day Trading, Congressional
+Intelligence, Trade Journal, and Settings are available without authentication or external API
+connections. The **More** tab provides access to the specialist research workspaces while keeping
+the primary tab bar focused.
+
+Shared `Header`, `ScreenContainer`, `Card`, `PrimaryButton`, and `SectionTitle` components establish
+the reusable dark-and-gold interface. Every workspace currently contains intentional placeholder
+content so future feature sprints can add data and behavior without rebuilding the shell.
+
 ## Integration boundaries
 
 - **Supabase:** call `getSupabaseClient()` from `src/lib/supabase.ts`. The client is initialized
@@ -86,14 +99,14 @@ centralized.
 
 ## Available scripts
 
-| Command | Description |
-| --- | --- |
-| `npm start` | Start the Expo development server. |
-| `npm run android` | Start Expo and open Android. |
-| `npm run ios` | Start Expo and open iOS. |
-| `npm run web` | Start Expo for web. |
-| `npm run lint` | Run Expo's ESLint configuration. |
-| `npm run typecheck` | Run TypeScript without emitting output. |
-| `npm run format` | Format the repository with Prettier. |
-| `npm run format:check` | Verify formatting without modifying files. |
-| `npm run check` | Run lint, type checking, and formatting checks. |
+| Command                | Description                                     |
+| ---------------------- | ----------------------------------------------- |
+| `npm start`            | Start the Expo development server.              |
+| `npm run android`      | Start Expo and open Android.                    |
+| `npm run ios`          | Start Expo and open iOS.                        |
+| `npm run web`          | Start Expo for web.                             |
+| `npm run lint`         | Run Expo's ESLint configuration.                |
+| `npm run typecheck`    | Run TypeScript without emitting output.         |
+| `npm run format`       | Format the repository with Prettier.            |
+| `npm run format:check` | Verify formatting without modifying files.      |
+| `npm run check`        | Run lint, type checking, and formatting checks. |
