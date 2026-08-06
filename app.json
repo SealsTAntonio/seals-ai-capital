@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "Seals AI Capital",
+    "slug": "seals-ai-capital",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "scheme": "seals-ai-capital",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sealsaicapital.app"
+    },
+    "android": {
+      "package": "com.sealsaicapital.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#090B10"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    },
+    "plugins": ["expo-router", "expo-splash-screen"],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
