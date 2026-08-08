@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 
 import { AuthLoadingState } from '@/features/auth/AuthComponents';
 import { AuthProvider, useAuth } from '@/features/auth/AuthProvider';
+import { ProfileProvider } from '@/features/profile/ProfileProvider';
 import { navigationTheme, theme } from '@/theme';
 
 export default function RootLayout() {
@@ -12,7 +13,9 @@ export default function RootLayout() {
     <ThemeProvider value={{ ...DarkTheme, ...navigationTheme }}>
       <StatusBar style="light" backgroundColor={theme.colors.background} />
       <AuthProvider>
-        <AuthenticatedNavigator />
+        <ProfileProvider>
+          <AuthenticatedNavigator />
+        </ProfileProvider>
       </AuthProvider>
     </ThemeProvider>
   );

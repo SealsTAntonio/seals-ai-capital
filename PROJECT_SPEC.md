@@ -1,6 +1,7 @@
 # Seals AI Capital
 
 ## Version
+
 0.1
 
 ## Mission
