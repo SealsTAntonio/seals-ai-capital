@@ -2,6 +2,29 @@
 
 All notable changes to Seals AI Capital are documented in this file.
 
+## Sprint 1.7 — 2026-08-08
+
+### Added
+
+- User-owned Watchlist and current Portfolio Position tables with normalization, validation, duplicate prevention, timestamps, indexes, and owner-only RLS.
+- Centralized investment services/provider, symbol search, watchlist controls, position editor, portfolio rows and summary, refresh behavior, and explicit loading/error/empty states.
+- Pure cost basis, market value, and unrealized return calculations with safe zero-cost and missing-quote behavior.
+
+### Changed
+
+- Replaced Watchlist and Portfolio placeholders with authenticated personal workspace screens.
+- Connected Dashboard Watchlist and Portfolio snapshots to user records while preserving existing intelligence sections.
+
+### Security
+
+- Restricted all Watchlist and Portfolio operations to `auth.uid() = user_id` through RLS and explicit user filters as defense in depth.
+- Retained the centralized Supabase client and provider-neutral market-data boundary; no privileged credential or real-money action was added.
+
+### Notes
+
+- Apply `supabase/migrations/20260808010000_create_watchlist_and_portfolio.sql` manually. A live migration or authenticated RLS test was unavailable locally.
+- Quote-derived values use the configured adapter. The default demo adapter remains illustrative and explicitly labeled, not live.
+
 ## Sprint 1.6 — 2026-08-08
 
 ### Added

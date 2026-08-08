@@ -187,3 +187,11 @@ boundary; provider keys and service credentials belong only in server-side secre
 | `npm run format`       | Format the repository with Prettier.            |
 | `npm run format:check` | Verify formatting without modifying files.      |
 | `npm run check`        | Run lint, type checking, and formatting checks. |
+
+## Sprint 1.7: personalized watchlist and portfolio foundation
+
+Apply `supabase/migrations/20260808010000_create_watchlist_and_portfolio.sql` after the profile migration with the Supabase CLI or SQL editor. It creates `public.watchlist` and `public.portfolio_positions` with normalized symbols, one row per user/symbol, timestamps, indexes, validation, and owner-only RLS for select, insert, update, and delete. Applying this migration is a required manual deployment step; this repository cannot apply or verify it against a live project without developer-provided access.
+
+Authenticated screens use the centralized Supabase client through a dedicated investment service and shared provider. The Watchlist supports market-service symbol search, duplicate-safe adds, removals, refresh, and explicit loading, empty, error, and retry states. Portfolio positions store only symbol, quantity, and average cost. Market value, cost basis, and unrealized returns are derived from available quotes; zero cost basis produces an unavailable percentage rather than division by zero. Dashboard Watchlist and Portfolio snapshots now reflect authenticated user records instead of static portfolio values.
+
+Supabase remains the authority for isolation: every data-access operation also includes the current user ID as defense in depth, while RLS enforces `auth.uid() = user_id`. Demo market mode remains illustrative and labeled, not live. No transaction history, brokerage connection, real-money trading, deposits, withdrawals, or AI integration is included.

@@ -1,4 +1,5 @@
-import type { PropsWithChildren } from 'react';
+import type { PropsWithChildren, ReactElement } from 'react';
+import type { RefreshControlProps } from 'react-native';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -8,15 +9,22 @@ import { theme } from '@/theme';
 type ScreenContainerProps = PropsWithChildren<{
   title: string;
   eyebrow?: string;
+  refreshControl?: ReactElement<RefreshControlProps>;
 }>;
 
-export function ScreenContainer({ children, eyebrow, title }: ScreenContainerProps) {
+export function ScreenContainer({
+  children,
+  eyebrow,
+  refreshControl,
+  title,
+}: ScreenContainerProps) {
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         contentInsetAdjustmentBehavior="automatic"
         showsVerticalScrollIndicator={false}
+        refreshControl={refreshControl}
       >
         <View style={styles.content}>
           <Header eyebrow={eyebrow} title={title} />
