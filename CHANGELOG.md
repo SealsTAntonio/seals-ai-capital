@@ -2,6 +2,33 @@
 
 All notable changes to Seals AI Capital are documented in this file.
 
+## Sprint 1.6 — 2026-08-08
+
+### Added
+
+- Provider-neutral quote, market-status, symbol-search, source, and service contract types.
+- Reusable single-quote, batched-quote, and market-status hooks with request coalescing, caching,
+  refresh state, and failure handling.
+- Explicit local demo adapter plus reusable market status, movement, quote row, loading, empty, and
+  error presentations.
+
+### Changed
+
+- Connected Dashboard market pulse and watchlist cards to the market service architecture while
+  preserving the premium dark-and-gold presentation.
+- Documented public adapter selection and trusted-backend requirements for a future live provider.
+
+### Security
+
+- Kept provider keys and privileged credentials out of Expo; future provider traffic must pass
+  through the trusted backend.
+- Retained the single centralized Supabase client without adding any market-provider dependency.
+
+### Notes
+
+- Dashboard values currently come from an explicitly labeled illustrative demo adapter, not a live
+  market feed. `backend` mode is reserved until a real trusted-backend adapter is implemented.
+
 ## Sprint 1.5 — 2026-08-08
 
 ### Added

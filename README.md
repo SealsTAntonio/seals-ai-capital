@@ -41,6 +41,7 @@ Expo inlines variables beginning with `EXPO_PUBLIC_` into the application bundle
 | `EXPO_PUBLIC_SUPABASE_URL`      | Public URL for the Supabase project.                                                 |
 | `EXPO_PUBLIC_SUPABASE_ANON_KEY` | Supabase publishable or legacy anonymous key. This must never be a service-role key. |
 | `EXPO_PUBLIC_API_BASE_URL`      | Trusted application backend or Supabase Edge Functions base URL.                     |
+| `EXPO_PUBLIC_MARKET_DATA_MODE`  | Public adapter selection. Use `demo`; `backend` is reserved for a future adapter.    |
 
 OpenAI must be called by the trusted backend identified by `EXPO_PUBLIC_API_BASE_URL`. **Never
 store an OpenAI API key in the application or in an `EXPO_PUBLIC_` variable.** The API service in
@@ -143,6 +144,26 @@ Profile access is enforced in PostgreSQL with row-level security based on `auth.
 continues to use the single centralized Supabase client and only the public project URL and
 publishable/anonymous key.
 
+## Sprint 1.6: live market data foundation
+
+Market data now follows a strict `MarketDataService → hooks → reusable market components → screen`
+flow under `src/features/market-data`. Provider-neutral quote models include price movement, OHLC,
+volume, average volume, market cap, 52-week range, timestamp, source, and a five-state market status.
+The service boundary also exposes batched quotes and symbol/company lookup for future Watchlist,
+Portfolio, Day Trading, Stock Analyzer, Ask SAC, and other features.
+
+`useQuote`, `useQuotes`, and `useMarketStatus` expose data, initial loading, error, refresh, and
+refresh-in-progress state. A short shared cache coalesces duplicate in-flight requests. Dashboard
+market cards use these abstractions and render distinct loading, failure, empty, positive, negative,
+and unchanged presentations.
+
+Development defaults to an in-memory demo adapter. Every demo surface is labeled **DEMO**, and its
+illustrative snapshots must not be treated as real-time prices. To add a production provider,
+implement `MarketDataService`, normalize provider payloads at the boundary, and install the adapter
+with `setMarketDataService`. The adapter must call the trusted backend through the existing API
+boundary; provider keys and service credentials belong only in server-side secret storage. Setting
+`EXPO_PUBLIC_MARKET_DATA_MODE=backend` alone does not create a production integration.
+
 ## Integration boundaries
 
 - **Supabase:** call `getSupabaseClient()` from `src/lib/supabase.ts`. The client is initialized
@@ -150,6 +171,8 @@ publishable/anonymous key.
 - **OpenAI:** call the project's trusted API through `apiRequest()` in `src/services/api.ts`.
   Provider credentials, prompts that must remain private, rate limiting, and OpenAI calls belong on
   the server.
+- **Market data:** consume `MarketDataService` or its hooks. Never call a vendor from a screen and
+  never place a vendor secret in Expo; production requests must traverse the trusted backend.
 
 ## Available scripts
 

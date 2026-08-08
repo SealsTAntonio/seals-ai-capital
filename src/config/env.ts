@@ -3,6 +3,10 @@ type SupabaseEnvironment = {
   supabaseUrl: string;
 };
 
+export type MarketDataEnvironment = {
+  mode: 'demo' | 'backend';
+};
+
 function requirePublicVariable(name: string, value: string | undefined): string {
   if (!value) {
     throw new Error(`Missing required public environment variable: ${name}`);
@@ -31,4 +35,13 @@ export function getApiBaseUrl(): string {
     'EXPO_PUBLIC_API_BASE_URL',
     process.env.EXPO_PUBLIC_API_BASE_URL,
   ).replace(/\/$/, '');
+}
+
+/** Only selects an adapter. Provider secrets must remain behind EXPO_PUBLIC_API_BASE_URL. */
+export function getMarketDataEnvironment(): MarketDataEnvironment {
+  const mode = process.env.EXPO_PUBLIC_MARKET_DATA_MODE ?? 'demo';
+  if (mode !== 'demo' && mode !== 'backend') {
+    throw new Error('EXPO_PUBLIC_MARKET_DATA_MODE must be "demo" or "backend".');
+  }
+  return { mode };
 }

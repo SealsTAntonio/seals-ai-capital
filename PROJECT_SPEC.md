@@ -120,3 +120,20 @@ News APIs
 SEC Filings
 
 Congressional Trading APIs
+
+## Sprint 1.6 — Market Data Foundation
+
+Market information flows through a provider-neutral `MarketDataService`, reusable cached hooks,
+market components, and finally screens. The quote domain covers identity, price and movement,
+session OHLC, volume, market capitalization, 52-week range, timestamp, source, and market status.
+Fields that a provider may omit are nullable so the interface never invents a value.
+
+The service supports single and batched quotes, market status, and symbol/company search. Market
+status represents open, pre-market, after-hours, closed, or unknown. Screens may not call a market
+provider directly. The current adapter is a local, explicitly labeled demo adapter; its values are
+illustrative and are never described as live.
+
+Production integration requires a new adapter that calls the trusted application backend at
+`EXPO_PUBLIC_API_BASE_URL`. Market-provider API keys, signing secrets, rate limiting, normalization,
+and upstream requests stay on that backend and must never be embedded in Expo. The public
+`EXPO_PUBLIC_MARKET_DATA_MODE` setting only selects `demo` or a future `backend` adapter.
