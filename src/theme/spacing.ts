@@ -3,6 +3,7 @@ export const spacing = {
   xs: 4,
   sm: 8,
   md: 16,
+  ml: 20,
   lg: 24,
   xl: 32,
   '2xl': 48,
@@ -14,5 +15,6 @@ export const radii = {
   md: 10,
   lg: 16,
   xl: 24,
+  '2xl': 32,
   full: 999,
 } as const;

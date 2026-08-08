@@ -7,11 +7,12 @@ type CardProps = PropsWithChildren<{
   title: string;
   description?: string;
   icon?: ReactNode;
+  compact?: boolean;
 }>;
 
-export function Card({ children, description, icon, title }: CardProps) {
+export function Card({ children, compact = false, description, icon, title }: CardProps) {
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, compact && styles.compact]}>
       <View style={styles.accent} />
       <View style={styles.headingRow}>
         {icon ? <View style={styles.icon}>{icon}</View> : null}
@@ -35,7 +36,13 @@ const styles = StyleSheet.create({
     minHeight: 142,
     overflow: 'hidden',
     padding: theme.spacing.lg,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.22,
+    shadowRadius: 20,
+    elevation: 5,
   },
+  compact: { minHeight: 0, padding: theme.spacing.md },
   accent: {
     backgroundColor: theme.colors.primary,
     height: 2,
@@ -57,7 +64,8 @@ const styles = StyleSheet.create({
   title: {
     color: theme.colors.text,
     fontSize: theme.typography.fontSize.lg,
-    fontWeight: theme.typography.fontWeight.semibold,
+    fontWeight: theme.typography.fontWeight.bold,
+    letterSpacing: -0.2,
   },
   description: {
     color: theme.colors.textMuted,

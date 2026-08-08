@@ -21,7 +21,7 @@ export function Header({ title, eyebrow = 'SEALS AI CAPITAL' }: HeaderProps) {
       </View>
       <View style={styles.status}>
         <View style={styles.statusDot} />
-        <Text style={styles.statusText}>MARKETS</Text>
+        <Text style={styles.statusText}>MARKETS OPEN</Text>
       </View>
     </View>
   );
@@ -35,17 +35,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: theme.spacing.md,
     paddingBottom: theme.spacing.md,
+    paddingTop: theme.spacing.xs,
   },
   brandMark: {
     alignItems: 'center',
-    backgroundColor: theme.colors.primary,
+    backgroundColor: theme.colors.primarySoft,
+    borderColor: theme.colors.primary,
+    borderWidth: 1,
     borderRadius: theme.radii.md,
     height: 42,
     justifyContent: 'center',
     width: 42,
   },
   brandMarkText: {
-    color: theme.colors.onPrimary,
+    color: theme.colors.primary,
     fontSize: theme.typography.fontSize.xl,
     fontWeight: theme.typography.fontWeight.bold,
   },
@@ -63,12 +66,20 @@ const styles = StyleSheet.create({
     fontWeight: theme.typography.fontWeight.bold,
     lineHeight: theme.typography.lineHeight.xl,
   },
-  status: { alignItems: 'center', gap: theme.spacing.xs },
+  status: {
+    alignItems: 'center',
+    backgroundColor: theme.colors.surfaceElevated,
+    borderRadius: theme.radii.full,
+    flexDirection: 'row',
+    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+  },
   statusDot: {
     backgroundColor: theme.colors.success,
     borderRadius: theme.radii.full,
     height: 6,
     width: 6,
   },
-  statusText: { color: theme.colors.textMuted, fontSize: 8, letterSpacing: 0.8 },
+  statusText: { color: theme.colors.textMuted, fontSize: 9, fontWeight: '700', letterSpacing: 0.6 },
 });

@@ -10,11 +10,11 @@ export function PrimaryButton({ disabled, label, style, ...props }: PrimaryButto
     <Pressable
       accessibilityRole="button"
       disabled={disabled}
-      style={({ pressed }) => [
+      style={(state) => [
         styles.button,
-        pressed && styles.pressed,
+        state.pressed && styles.pressed,
         disabled && styles.disabled,
-        typeof style === 'function' ? style({ pressed }) : style,
+        typeof style === 'function' ? style(state) : style,
       ]}
       {...props}
     >
@@ -31,8 +31,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minHeight: 48,
     paddingHorizontal: theme.spacing.lg,
+    shadowColor: theme.colors.primary,
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 3,
   },
-  pressed: { backgroundColor: theme.colors.primaryPressed },
+  pressed: { backgroundColor: theme.colors.primaryPressed, transform: [{ scale: 0.98 }] },
   disabled: { opacity: 0.45 },
   label: {
     color: theme.colors.onPrimary,
