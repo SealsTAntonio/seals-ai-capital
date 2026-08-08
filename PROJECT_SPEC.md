@@ -137,3 +137,11 @@ Production integration requires a new adapter that calls the trusted application
 `EXPO_PUBLIC_API_BASE_URL`. Market-provider API keys, signing secrets, rate limiting, normalization,
 and upstream requests stay on that backend and must never be embedded in Expo. The public
 `EXPO_PUBLIC_MARKET_DATA_MODE` setting only selects `demo` or a future `backend` adapter.
+
+## Sprint 1.7 — Watchlist and Portfolio Foundation
+
+Authenticated users own Watchlist entries and current Portfolio positions. `public.watchlist` stores a normalized symbol and optional display name; `public.portfolio_positions` stores a normalized symbol, positive quantity, and non-negative average cost. Both tables reference `auth.users`, cascade on user deletion, enforce one row per user/symbol, maintain timestamps, and index owner IDs. RLS permits select, insert, update, and delete only when `auth.uid() = user_id`.
+
+Feature access follows `investment service → shared provider/hooks → reusable components → routes`. The service uses the single centralized Supabase client and explicitly scopes queries by user as defense in depth. Quotes and search continue through Sprint 1.6's `MarketDataService`; no duplicate vendor model or client is introduced.
+
+Position calculations are derived, not persisted: market value is quantity × current price; cost basis is quantity × average cost; unrealized gain/loss is market value − cost basis; and return percentage is unrealized gain/loss ÷ cost basis × 100. Missing quotes produce unavailable quote-derived metrics, and zero cost basis safely produces an unavailable percentage. Current positions are not a transaction ledger and do not represent trades or real money. The migration must be manually applied to each Supabase environment; this local repository cannot verify a live deployment.

@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 import { DashboardCard, ScreenContainer, SectionTitle } from '@/components';
+import { useInvestments } from '@/features/investments';
 import { useMarketStatus, useQuotes } from '@/features/market-data';
 import {
   MarketPulseCard,
@@ -22,11 +23,11 @@ function GoldIcon({ children }: { children: string }) {
 }
 
 export default function DashboardScreen() {
+  const investments = useInvestments();
   const quotes = useQuotes(dashboardSymbols);
   const marketStatus = useMarketStatus();
   const pulse = quotes.data?.filter((quote) => ['SPY', 'QQQ', 'VIX'].includes(quote.symbol)) ?? [];
-  const watchlist =
-    quotes.data?.filter((quote) => ['NVDA', 'MSFT', 'AMZN'].includes(quote.symbol)) ?? [];
+  const watchlist = investments.watchlistQuotes?.slice(0, 3) ?? [];
   return (
     <ScreenContainer title="Dashboard">
       <View style={styles.hero}>
@@ -69,12 +70,12 @@ export default function DashboardScreen() {
         </View>
         <View style={styles.gridItem}>
           <DashboardCard icon={<GoldIcon>★</GoldIcon>} title="Today's Watchlist">
-            {quotes.loading ? (
+            {investments.loading ? (
               <MarketState kind="loading" />
-            ) : quotes.error ? (
-              <MarketState kind="error" onRetry={() => void quotes.refresh()} />
+            ) : investments.error ? (
+              <MarketState kind="error" onRetry={() => void investments.refresh()} />
             ) : watchlist.length === 0 ? (
-              <MarketState kind="empty" />
+              <Text style={styles.detail}>No watched symbols yet. Add one from Watchlist.</Text>
             ) : (
               watchlist.map((quote, index) => (
                 <QuoteRow bordered={index > 0} key={quote.symbol} quote={quote} />
@@ -85,13 +86,35 @@ export default function DashboardScreen() {
         <View style={styles.gridItem}>
           <DashboardCard icon={<GoldIcon>◒</GoldIcon>} title="Portfolio Snapshot">
             <Text style={styles.caption}>TOTAL VALUE</Text>
-            <Text style={styles.portfolioValue}>$248,620.40</Text>
-            <Text style={styles.change}>+$3,184.20 (+1.30%) today</Text>
-            <View style={styles.allocation}>
-              <View style={[styles.allocationPart, { flex: 6 }]} />
-              <View style={[styles.allocationPart, styles.allocationSecondary, { flex: 3 }]} />
-              <View style={[styles.allocationPart, styles.allocationCash, { flex: 1 }]} />
-            </View>
+            {investments.loading ? (
+              <MarketState kind="loading" />
+            ) : investments.positions.length === 0 ? (
+              <Text style={styles.detail}>
+                No positions yet. Add your first position from Portfolio.
+              </Text>
+            ) : (
+              <>
+                <Text style={styles.portfolioValue}>
+                  {investments.totals.marketValue === null
+                    ? 'Unavailable'
+                    : new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
+                        investments.totals.marketValue,
+                      )}
+                </Text>
+                <Text
+                  style={[
+                    styles.change,
+                    (investments.totals.unrealizedGainLoss ?? 0) < 0 && styles.negative,
+                  ]}
+                >
+                  {investments.totals.unrealizedGainLoss === null
+                    ? 'Return unavailable'
+                    : `${investments.totals.unrealizedGainLoss >= 0 ? '+' : ''}${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(investments.totals.unrealizedGainLoss)} unrealized`}{' '}
+                  • {investments.positions.length} position
+                  {investments.positions.length === 1 ? '' : 's'}
+                </Text>
+              </>
+            )}
           </DashboardCard>
         </View>
         <View style={styles.gridItem}>
