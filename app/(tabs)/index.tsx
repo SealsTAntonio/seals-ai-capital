@@ -1,13 +1,16 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { DashboardCard, ScreenContainer, SectionTitle, StatCard } from '@/components';
+import { DashboardCard, ScreenContainer, SectionTitle } from '@/components';
+import { useMarketStatus, useQuotes } from '@/features/market-data';
+import {
+  MarketPulseCard,
+  MarketState,
+  MarketStatusBadge,
+  QuoteRow,
+} from '@/features/market-data/MarketDataComponents';
 import { theme } from '@/theme';
 
-const watchlist = [
-  ['NVDA', 'NVIDIA', '$184.86', '+2.41%'],
-  ['MSFT', 'Microsoft', '$417.52', '+0.76%'],
-  ['AMZN', 'Amazon', '$212.31', '−0.34%'],
-] as const;
+const dashboardSymbols = ['SPY', 'QQQ', 'VIX', 'NVDA', 'MSFT', 'AMZN'];
 
 const news = [
   ['Markets weigh rate outlook as technology leads', '12 MIN AGO'],
@@ -19,18 +22,34 @@ function GoldIcon({ children }: { children: string }) {
 }
 
 export default function DashboardScreen() {
+  const quotes = useQuotes(dashboardSymbols);
+  const marketStatus = useMarketStatus();
+  const pulse = quotes.data?.filter((quote) => ['SPY', 'QQQ', 'VIX'].includes(quote.symbol)) ?? [];
+  const watchlist =
+    quotes.data?.filter((quote) => ['NVDA', 'MSFT', 'AMZN'].includes(quote.symbol)) ?? [];
   return (
     <ScreenContainer title="Dashboard">
       <View style={styles.hero}>
         <Text style={styles.kicker}>FRIDAY, AUGUST 7</Text>
         <Text style={styles.greeting}>Good morning, Investor.</Text>
         <Text style={styles.subtitle}>Your disciplined research briefing is ready.</Text>
+        <MarketStatusBadge
+          error={marketStatus.error}
+          loading={marketStatus.loading}
+          snapshot={marketStatus.data}
+        />
       </View>
       <SectionTitle>MARKET PULSE</SectionTitle>
       <View style={styles.stats}>
-        <StatCard change="+0.68%" label="S&P 500" value="6,389.45" />
-        <StatCard change="+0.91%" label="NASDAQ" value="21,242.70" />
-        <StatCard change="−1.24%" label="VIX" positive={false} value="15.42" />
+        {quotes.loading ? (
+          <MarketState kind="loading" />
+        ) : quotes.error ? (
+          <MarketState kind="error" onRetry={() => void quotes.refresh()} />
+        ) : pulse.length === 0 ? (
+          <MarketState kind="empty" />
+        ) : (
+          pulse.map((quote) => <MarketPulseCard key={quote.symbol} quote={quote} />)
+        )}
       </View>
       <SectionTitle>DAILY INTELLIGENCE</SectionTitle>
       <View style={styles.grid}>
@@ -50,20 +69,17 @@ export default function DashboardScreen() {
         </View>
         <View style={styles.gridItem}>
           <DashboardCard icon={<GoldIcon>★</GoldIcon>} title="Today's Watchlist">
-            {watchlist.map(([ticker, name, price, change], index) => (
-              <View key={ticker} style={[styles.row, index > 0 && styles.rowBorder]}>
-                <View style={styles.ticker}>
-                  <Text style={styles.tickerText}>{ticker}</Text>
-                </View>
-                <View style={styles.rowCopy}>
-                  <Text style={styles.rowTitle}>{name}</Text>
-                  <Text style={styles.rowCaption}>{price}</Text>
-                </View>
-                <Text style={[styles.change, change.startsWith('−') && styles.negative]}>
-                  {change}
-                </Text>
-              </View>
-            ))}
+            {quotes.loading ? (
+              <MarketState kind="loading" />
+            ) : quotes.error ? (
+              <MarketState kind="error" onRetry={() => void quotes.refresh()} />
+            ) : watchlist.length === 0 ? (
+              <MarketState kind="empty" />
+            ) : (
+              watchlist.map((quote, index) => (
+                <QuoteRow bordered={index > 0} key={quote.symbol} quote={quote} />
+              ))
+            )}
           </DashboardCard>
         </View>
         <View style={styles.gridItem}>
@@ -115,7 +131,7 @@ export default function DashboardScreen() {
         </View>
       </View>
       <Text style={styles.disclaimer}>
-        Illustrative market data for product demonstration only.
+        DEMO MARKET DATA • Illustrative values only. Not live and not investment advice.
       </Text>
     </ScreenContainer>
   );
