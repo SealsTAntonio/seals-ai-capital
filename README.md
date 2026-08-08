@@ -77,17 +77,18 @@ Consume tokens from `@/theme` instead of embedding colors or spacing values in c
 keeps React Navigation and application UI visually consistent and makes future theming changes
 centralized.
 
-## Sprint 1.2: navigation and application shell
+## Sprint 1.3: premium UI and dashboard
 
-Sprint 1.2 introduces a complete Expo Router application shell with an adaptive, safe-area-aware
-bottom tab bar. Dashboard, Ask SAC AI, Watchlist, Portfolio, Day Trading, Congressional
-Intelligence, Trade Journal, and Settings are available without authentication or external API
-connections. The **More** tab provides access to the specialist research workspaces while keeping
-the primary tab bar focused.
+Sprint 1.3 transforms the application shell into a polished fintech experience. A branded animated
+splash screen introduces the mission, while the dashboard presents an illustrative market pulse,
+watchlist, portfolio snapshot, AI insight, congressional disclosure, and curated headlines. All
+values are realistic demonstration data—this sprint intentionally makes no API, authentication,
+Supabase, or OpenAI calls.
 
-Shared `Header`, `ScreenContainer`, `Card`, `PrimaryButton`, and `SectionTitle` components establish
-the reusable dark-and-gold interface. Every workspace currently contains intentional placeholder
-content so future feature sprints can add data and behavior without rebuilding the shell.
+The refined dark-and-gold design system includes a stronger typography hierarchy, consistent
+spacing, layered surfaces, subtle elevation, and active gold navigation. Shared `Header`,
+`ScreenContainer`, `Card`, `PrimaryButton`, and `SectionTitle` primitives have been enhanced, with
+new `StatCard`, `DashboardCard`, and `EmptyState` components available for future features.
 
 ## Integration boundaries
 

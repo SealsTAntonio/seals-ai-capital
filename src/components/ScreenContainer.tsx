@@ -32,9 +32,9 @@ const styles = StyleSheet.create({
   scrollContent: { flexGrow: 1 },
   content: {
     alignSelf: 'center',
-    gap: theme.spacing.lg,
-    maxWidth: 960,
-    paddingHorizontal: theme.spacing.md,
+    gap: theme.spacing.xl,
+    maxWidth: 1080,
+    paddingHorizontal: theme.spacing.ml,
     paddingTop: theme.spacing.sm,
     paddingBottom: theme.spacing['2xl'],
     width: '100%',

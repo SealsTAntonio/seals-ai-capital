@@ -13,6 +13,7 @@ export const typography = {
     xl: 24,
     '2xl': 32,
     '3xl': 40,
+    '4xl': 48,
   },
   lineHeight: {
     xs: 16,
@@ -22,6 +23,7 @@ export const typography = {
     xl: 32,
     '2xl': 40,
     '3xl': 48,
+    '4xl': 56,
   },
   fontWeight: {
     regular: '400',

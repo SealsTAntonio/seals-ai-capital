@@ -5,7 +5,7 @@ import { NavIcon } from '@/components/NavIcon';
 import { theme } from '@/theme';
 
 const icons: Record<string, string> = {
-  index: '◆',
+  index: '⌂',
   ask: '✦',
   watchlist: '★',
   portfolio: '◒',
@@ -25,6 +25,7 @@ export default function TabLayout() {
           <NavIcon color={color} size={size} symbol={icons[route.name] ?? '•'} />
         ),
         tabBarLabelStyle: styles.label,
+        tabBarItemStyle: styles.tabItem,
         tabBarStyle: styles.tabBar,
       })}
     >
@@ -49,6 +50,12 @@ const styles = StyleSheet.create({
     height: Platform.select({ ios: 84, default: 68 }),
     paddingBottom: Platform.select({ ios: 24, default: 8 }),
     paddingTop: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 18,
+    elevation: 12,
   },
-  label: { fontSize: 11, fontWeight: theme.typography.fontWeight.semibold },
+  tabItem: { borderRadius: theme.radii.md },
+  label: { fontSize: 10, fontWeight: theme.typography.fontWeight.semibold, letterSpacing: 0.2 },
 });
