@@ -1,7 +1,10 @@
 import { Link } from 'expo-router';
+import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { Card, ScreenContainer, SectionTitle } from '@/components';
+import { Card, PrimaryButton, ScreenContainer, SectionTitle } from '@/components';
+import { AuthMessage } from '@/features/auth/AuthComponents';
+import { useAuth } from '@/features/auth/AuthProvider';
 import { theme } from '@/theme';
 
 const destinations = [
@@ -11,6 +14,18 @@ const destinations = [
 ] as const;
 
 export default function SettingsScreen() {
+  const { signOut, user } = useAuth();
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const [error, setError] = useState<string>();
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true);
+    setError(undefined);
+    const result = await signOut();
+    setError(result.error);
+    setIsSigningOut(false);
+  };
+
   return (
     <ScreenContainer title="Settings">
       <SectionTitle>RESEARCH TOOLS</SectionTitle>
@@ -27,6 +42,15 @@ export default function SettingsScreen() {
         title="Application Preferences"
         description="Theme, notifications, data, and account preferences will be configured here."
       />
+      <SectionTitle>ACCOUNT</SectionTitle>
+      <Card compact title="Authenticated account" description={user?.email ?? 'Signed in'}>
+        <AuthMessage message={error} />
+        <PrimaryButton
+          disabled={isSigningOut}
+          label={isSigningOut ? 'Signing Out…' : 'Sign Out'}
+          onPress={() => void handleSignOut()}
+        />
+      </Card>
     </ScreenContainer>
   );
 }

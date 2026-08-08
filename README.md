@@ -19,6 +19,11 @@ cp .env.example .env.local
 npm start
 ```
 
+Before starting Expo, replace the placeholder Supabase values in `.env.local`. The app restores
+persisted sessions at launch and routes signed-out users to the welcome, sign-in, and account
+creation experience. Signed-in users enter the existing protected application tabs; use the
+Settings account section to sign out.
+
 Use `npm run android`, `npm run ios`, or `npm run web` to open a specific platform. Before
 submitting changes, run the complete local verification suite:
 
@@ -40,6 +45,18 @@ Expo inlines variables beginning with `EXPO_PUBLIC_` into the application bundle
 OpenAI must be called by the trusted backend identified by `EXPO_PUBLIC_API_BASE_URL`. **Never
 store an OpenAI API key in the application or in an `EXPO_PUBLIC_` variable.** The API service in
 `src/services/api.ts` provides the client-side boundary for future AI features.
+
+### Supabase email/password setup
+
+1. Create or select a Supabase project and copy its project URL and publishable (or legacy anon)
+   key from the project's API settings into `.env.local`.
+2. In the Supabase dashboard, open **Authentication → Providers → Email** and enable the Email
+   provider. Choose whether email confirmation is required for your local workflow.
+3. When confirmation is enabled, configure the Authentication URL settings for the URLs used by
+   your Expo application, then confirm the verification email before signing in.
+
+Only the public project URL and publishable/anonymous key belong in the Expo client. Never use a
+service-role or secret key in `.env.local`, an `EXPO_PUBLIC_` variable, or client source code.
 
 ## Project structure
 
@@ -89,6 +106,17 @@ The refined dark-and-gold design system includes a stronger typography hierarchy
 spacing, layered surfaces, subtle elevation, and active gold navigation. Shared `Header`,
 `ScreenContainer`, `Card`, `PrimaryButton`, and `SectionTitle` primitives have been enhanced, with
 new `StatCard`, `DashboardCard`, and `EmptyState` components available for future features.
+
+## Sprint 1.4: Supabase authentication
+
+Sprint 1.4 adds real Supabase email/password sign-up, sign-in, and sign-out flows while preserving
+the premium dark-and-gold application shell. A centralized authentication provider restores the
+persisted session, listens for authentication changes, exposes the current Supabase user, and
+prevents protected content from rendering until authentication is known. Expo Router directs
+signed-out users to the authentication route group and signed-in users to the existing tabs.
+
+Authentication forms include basic email, empty-field, password length, and password confirmation
+validation plus request loading, disabled-button, success, and user-friendly error states.
 
 ## Integration boundaries
 
