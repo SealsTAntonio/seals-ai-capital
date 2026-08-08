@@ -5,6 +5,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Card, PrimaryButton, ScreenContainer, SectionTitle } from '@/components';
 import { AuthMessage } from '@/features/auth/AuthComponents';
 import { useAuth } from '@/features/auth/AuthProvider';
+import { ProfileCard } from '@/features/profile/ProfileCard';
 import { theme } from '@/theme';
 
 const destinations = [
@@ -43,7 +44,8 @@ export default function SettingsScreen() {
         description="Theme, notifications, data, and account preferences will be configured here."
       />
       <SectionTitle>ACCOUNT</SectionTitle>
-      <Card compact title="Authenticated account" description={user?.email ?? 'Signed in'}>
+      <ProfileCard />
+      <Card compact title="Session" description={user?.email ?? 'Signed out'}>
         <AuthMessage message={error} />
         <PrimaryButton
           disabled={isSigningOut}

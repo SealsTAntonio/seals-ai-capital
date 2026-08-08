@@ -2,6 +2,34 @@
 
 All notable changes to Seals AI Capital are documented in this file.
 
+## Sprint 1.5 — 2026-08-08
+
+### Added
+
+- One-to-one Supabase application profiles with an optional display name and lifecycle timestamps.
+- Idempotent first-session profile initialization with loading, missing, error, retry, and
+  signed-out states kept separate from authentication state.
+- Premium account profile editor with save success and failure feedback.
+
+### Changed
+
+- Expanded Settings to show the authenticated email, editable profile information, and session
+  controls.
+- Wrapped protected navigation in a dedicated profile provider while retaining the existing auth
+  provider and centralized Supabase client.
+
+### Security
+
+- Enabled row-level security with policies restricting profile select, insert, and update access to
+  the matching authenticated `auth.uid()`.
+- Kept privileged credentials out of profile storage and the Expo client.
+
+### Notes
+
+- Developers must apply `supabase/migrations/20260808000000_create_profiles.sql` to their Supabase
+  project before using profile features.
+- A live authenticated-device test requires developer-provided public Supabase configuration.
+
 ## Sprint 1.4 — 2026-08-08
 
 ### Added

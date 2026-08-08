@@ -58,6 +58,19 @@ store an OpenAI API key in the application or in an `EXPO_PUBLIC_` variable.** T
 Only the public project URL and publishable/anonymous key belong in the Expo client. Never use a
 service-role or secret key in `.env.local`, an `EXPO_PUBLIC_` variable, or client source code.
 
+### Supabase profile setup (Sprint 1.5)
+
+Apply `supabase/migrations/20260808000000_create_profiles.sql` with the Supabase CLI or the SQL
+editor before opening the authenticated application. The migration creates a one-to-one
+`public.profiles` record keyed to `auth.users.id`, enables row-level security, and installs
+authenticated-user-only select, insert, and update policies. It also maintains `updated_at` on
+profile updates. No service-role key is required by—or permitted in—the Expo client.
+
+On the first authenticated session, the profile provider queries for the current user's row and
+idempotently initializes it when absent. Settings then allows the user to view their authentication
+email and edit the optional display name. Authentication/session state remains owned by the auth
+provider; profile loading, initialization, retry, and update state remains in the profile feature.
+
 ## Project structure
 
 ```text
@@ -117,6 +130,18 @@ signed-out users to the authentication route group and signed-in users to the ex
 
 Authentication forms include basic email, empty-field, password length, and password confirmation
 validation plus request loading, disabled-button, success, and user-friendly error states.
+
+## Sprint 1.5: user profile and account foundation
+
+Sprint 1.5 adds a dedicated profile data-access layer and provider on top of authentication. It
+handles first-session profile initialization without duplicate rows and exposes explicit loading,
+missing, ready, error, and signed-out states. The Settings account experience includes the user's
+read-only authentication email, an editable optional display name, save feedback, retry behavior,
+and the existing sign-out control.
+
+Profile access is enforced in PostgreSQL with row-level security based on `auth.uid()`. Client code
+continues to use the single centralized Supabase client and only the public project URL and
+publishable/anonymous key.
 
 ## Integration boundaries
 
