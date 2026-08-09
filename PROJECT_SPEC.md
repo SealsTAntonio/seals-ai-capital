@@ -196,3 +196,17 @@ Indicator calculations are deterministic and independently testable. SMA/EMA req
 The technical score is a transparent weighted description: trend 30%, momentum 25%, volume 15%, volatility context 10%, and support/resistance 20%. It renormalizes across available inputs and exposes every component and reason. Bullish, bearish, and neutral are technical classifications, not Buy/Sell claims, financial advice, or guarantees.
 
 The default provider is deliberately unavailable. No live or demo candles are fabricated. Future adapters must run credentialed upstream access on the trusted backend, normalize validated responses, preserve provider failures without silent demo fallback, declare timeframe coverage/freshness, and never expose secrets in Expo. Cache keys include symbol and timeframe, coalesce in-flight work, expire bounded results, and expose upstream freshness. No Supabase client, brokerage credential, order placement, execution, or financial transaction is added.
+
+## Sprint 2.3 — Advanced Technical Analysis & Signal Intelligence
+
+The provider-neutral pipeline now derives SMA, EMA, RSI, MACD, ATR, Bollinger Bands, VWAP,
+stochastic %K/%D, ADX with +DI/-DI, ROC, average/relative volume, momentum, trend, volatility, and
+observed support/resistance solely from validated OHLCV history. Every reading inherits `real`,
+`partial`, `demo`, `unavailable`, or `error` provenance; insufficient history is unavailable and is
+never replaced with an invented value.
+
+Signal intelligence classifies descriptive trend, momentum, oscillator, moving-average, volume,
+and range-proximity conditions. The explainable 0–100 score retains weighted factors and maps
+0–20 to very bearish, 21–40 bearish, 41–59 mixed, 60–79 bullish, and 80–100 very bullish context.
+It is technical context, not advice, a prediction, or an execution instruction. No provider secret,
+Supabase client, migration, broker connection, order action, or transaction was added.

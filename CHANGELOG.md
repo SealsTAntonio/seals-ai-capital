@@ -2,6 +2,20 @@
 
 All notable changes to Seals AI Capital are documented in this file.
 
+## Sprint 2.3 — 2026-08-09
+
+### Added
+
+- Deterministic VWAP, stochastic oscillator, ADX/+DI/-DI, ROC, average-volume, and relative-volume calculations alongside the existing technical indicator suite.
+- Provider-neutral technical condition evaluation for trend, momentum, RSI, MACD, moving-average, volume, support, and resistance context.
+- Expanded symbol workspace sections, weighted score factors, signal explanations, warnings, and per-indicator five-state provenance.
+- Automated coverage for calculations, deterministic results, insufficient history, provenance states, provider failures, validation, and cache deduplication.
+
+### Security and limitations
+
+- The default historical provider remains unavailable and no live or demo candles are fabricated. Partial and demo data remain explicitly labeled and provider failures never trigger fallback data.
+- Signals and scores are descriptive technical conditions, not predictions, advice, or trade actions. No broker, order execution, transaction, credential, migration, or additional Supabase client was added.
+
 ## Sprint 2.1 — 2026-08-09
 
 ### Added

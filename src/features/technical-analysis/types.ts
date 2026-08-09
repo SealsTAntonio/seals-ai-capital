@@ -13,7 +13,7 @@ export type Timeframe = (typeof TECHNICAL_TIMEFRAMES)[number];
 export type TechnicalDataStatus = 'real' | 'partial' | 'demo' | 'unavailable' | 'error';
 export type TechnicalClassification = 'bullish' | 'bearish' | 'neutral';
 export type TrendState = 'uptrend' | 'downtrend' | 'sideways' | 'unavailable';
-export type Availability = 'available' | 'insufficient-data' | 'unavailable';
+export type Availability = 'real' | 'partial' | 'demo' | 'unavailable' | 'error';
 
 export interface OhlcvCandle {
   timestamp: string;
@@ -50,6 +50,7 @@ export interface IndicatorSummary {
   status: Availability;
   value: number | null;
   detail: string;
+  values?: Record<string, number>;
 }
 export interface ScoreComponent {
   name: 'trend' | 'momentum' | 'volume' | 'volatility' | 'supportResistance';
@@ -75,6 +76,16 @@ export interface TechnicalAnalysis {
   resistance: number | null;
   indicators: IndicatorSummary[];
   score: TechnicalScore;
+  signals: TechnicalSignal[];
+  explanation: string;
+  warnings: string[];
+}
+export type SignalDirection = 'bullish' | 'bearish' | 'neutral';
+export interface TechnicalSignal {
+  id: string;
+  label: string;
+  direction: SignalDirection;
+  explanation: string;
 }
 export interface MarketDataProvider {
   readonly name: string;

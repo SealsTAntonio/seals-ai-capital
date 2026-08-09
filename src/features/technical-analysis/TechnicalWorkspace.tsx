@@ -92,6 +92,17 @@ function Analysis({
               <Fact label="CANDLES" value={String(data.series.candles.length)} />
             </View>
           </Card>
+          <SectionTitle>TECHNICAL OVERVIEW</SectionTitle>
+          <Card
+            title={`${data.trend.toUpperCase()} • ${shown(data.series.candles.at(-1)?.close ?? null)}`}
+            description={data.explanation}
+          >
+            {data.warnings.map((warning) => (
+              <Text key={warning} style={styles.warning}>
+                • {warning}
+              </Text>
+            ))}
+          </Card>
           <SectionTitle>TECHNICAL SCORE</SectionTitle>
           <Card
             title={
@@ -110,18 +121,28 @@ function Analysis({
               </View>
             ))}
           </Card>
-          <SectionTitle>MARKET STRUCTURE</SectionTitle>
-          <Card title="Trend, momentum & range">
+          <SectionTitle>TREND</SectionTitle>
+          <Card title="Trend direction">
             <View style={styles.grid}>
               <Fact label="TREND" value={data.trend} />
+            </View>
+          </Card>
+          <SectionTitle>MOMENTUM • VOLATILITY • VOLUME</SectionTitle>
+          <Card title="Validated market conditions">
+            <View style={styles.grid}>
               <Fact label="MOMENTUM" value={shown(data.momentum, '%')} />
               <Fact label="VOLATILITY" value={shown(data.volatility, '%')} />
               <Fact label="VOLUME" value={data.volumeCondition} />
+            </View>
+          </Card>
+          <SectionTitle>SUPPORT &amp; RESISTANCE</SectionTitle>
+          <Card title="20-period observed range">
+            <View style={styles.grid}>
               <Fact label="SUPPORT" value={shown(data.support)} />
               <Fact label="RESISTANCE" value={shown(data.resistance)} />
             </View>
           </Card>
-          <SectionTitle>INDICATORS</SectionTitle>
+          <SectionTitle>MOVING AVERAGES &amp; OSCILLATORS</SectionTitle>
           {data.indicators.map((i) => (
             <Card compact key={i.name} title={i.name} description={i.detail}>
               <Text style={i.value === null ? styles.muted : styles.value}>
@@ -129,6 +150,24 @@ function Analysis({
               </Text>
             </Card>
           ))}
+          <SectionTitle>SIGNAL BREAKDOWN</SectionTitle>
+          <Card
+            title={`${data.signals.length} technical conditions`}
+            description="Signals describe current technical context; they are not trade instructions."
+          >
+            {data.signals.length ? (
+              data.signals.map((signal) => (
+                <View key={signal.id} style={styles.row}>
+                  <Text style={styles.value}>
+                    {signal.label} • {signal.direction.toUpperCase()}
+                  </Text>
+                  <Text style={styles.muted}>{signal.explanation}</Text>
+                </View>
+              ))
+            ) : (
+              <Text style={styles.muted}>No validated signals are available.</Text>
+            )}
+          </Card>
         </>
       )}
     </>
@@ -152,6 +191,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   value: { color: theme.colors.text, fontWeight: '700' },
+  warning: { color: theme.colors.warning, fontSize: theme.typography.fontSize.sm },
   link: { color: theme.colors.primary, fontWeight: '700', textAlign: 'center' },
   timeframes: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing.xs },
   pill: {

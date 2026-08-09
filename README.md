@@ -246,3 +246,18 @@ Technical analysis follows `TechnicalAnalysisService → MarketDataProvider → 
 Pure modules implement SMA, EMA, RSI, MACD, ATR, Bollinger Bands, volume comparison, momentum, trend, return volatility, and support/resistance. Every calculation documents its lookback and returns explicit insufficient data rather than NaN, Infinity, or a substitute zero. The explainable 0–100 score weights trend (30%), momentum (25%), volume (15%), volatility context (10%), and support/range context (20%), renormalizing across available components. Bullish/bearish/neutral is descriptive context—not a Buy/Sell recommendation or profit guarantee.
 
 No historical-candle provider is enabled by default. The workspace therefore renders **UNAVAILABLE** and never synthesizes candles. Future adapters must retrieve data through a trusted backend or Edge Function, validate and normalize candles, state supported timeframes and latency, preserve errors without demo fallback, and keep provider keys server-side. Any development fixture must retain `demo` provenance and label every derived result illustrative, never live.
+
+## Sprint 2.3: advanced technical analysis and signal intelligence
+
+The shared symbol Technical workspace now groups technical overview, trend, momentum, volatility,
+volume, moving averages, oscillators, support/resistance, score, and an explainable signal
+breakdown. Its deterministic engine adds VWAP, stochastic %K/%D, ADX/+DI/-DI, ROC, average volume,
+and relative volume to the Sprint 2.2 suite. Calculations require documented history and never
+synthesize a missing value.
+
+Every indicator visibly inherits **REAL**, **PARTIAL**, **DEMO / ILLUSTRATIVE**, **UNAVAILABLE**, or
+**ERROR** provenance. The score renormalizes only available weighted factors and exposes each
+factor. Signals and scores are descriptive technical conditions—not predictions, financial advice,
+or Buy/Sell instructions. The default provider remains unavailable; credentialed providers stay
+behind the trusted backend, and no trading, brokerage, secret, migration, or second Supabase client
+is included.
