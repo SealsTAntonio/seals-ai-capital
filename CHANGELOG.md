@@ -2,6 +2,19 @@
 
 All notable changes to Seals AI Capital are documented in this file.
 
+## Sprint 2.6 — 2026-08-09
+
+### Added
+
+- Provider-neutral catalyst, impact, risk, timeline, provenance, market-context, sector-context, portfolio, and alert-ready contracts with explicit REAL/PARTIAL/DEMO/UNAVAILABLE/EMPTY/ERROR states.
+- Deterministic freshness, phase, confidence, and contextual conflict assessment layered on existing Sprint 2.5 opportunities without changing the Sprint 2.4 Composite Score or rank order.
+- Backward-compatible optional opportunity and Watchlist context, catalyst-aware explanations, expanded workspace views, and tests for provider failures and no-fabrication behavior.
+
+### Security and limitations
+
+- No live catalyst provider is configured. The default provider returns UNAVAILABLE with empty events and no provenance; it never silently substitutes demo data.
+- Catalyst language describes potential support, adversity, mixed evidence, or uncertainty—not causation, guaranteed price movement, advice, or execution. No broker, order, wallet, payment, private key, service-role secret, or financial transaction capability was added.
+
 ## Sprint 2.5 — 2026-08-09
 
 ### Added

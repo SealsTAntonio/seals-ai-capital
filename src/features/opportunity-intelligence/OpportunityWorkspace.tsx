@@ -6,7 +6,22 @@ import { theme } from '@/theme';
 import type { RankedOpportunity } from './types';
 
 export type OpportunityView =
-  'top' | 'bullish' | 'bearish' | 'confidence' | 'momentum' | 'risk' | 'conflicts' | 'incomplete';
+  | 'top'
+  | 'bullish'
+  | 'bearish'
+  | 'confidence'
+  | 'momentum'
+  | 'risk'
+  | 'conflicts'
+  | 'incomplete'
+  | 'upcoming-catalysts'
+  | 'recent-catalysts'
+  | 'catalyst-risk'
+  | 'positive-catalysts'
+  | 'negative-catalysts'
+  | 'context-conflicts'
+  | 'market-context'
+  | 'sector-context';
 
 const select = (items: RankedOpportunity[], view: OpportunityView) => {
   const copy = [...items];
@@ -22,6 +37,20 @@ const select = (items: RankedOpportunity[], view: OpportunityView) => {
   if (view === 'momentum')
     return copy.sort((a, b) => (b.momentumScore ?? -1) - (a.momentumScore ?? -1));
   if (view === 'risk') return copy.sort((a, b) => (a.riskScore ?? 101) - (b.riskScore ?? 101));
+  if (view === 'upcoming-catalysts')
+    return copy.filter((item) => (item.context?.upcomingCatalystCount ?? 0) > 0);
+  if (view === 'recent-catalysts')
+    return copy.filter((item) => (item.context?.recentCatalystCount ?? 0) > 0);
+  if (view === 'catalyst-risk')
+    return copy.filter((item) => (item.context?.catalystRisks.length ?? 0) > 0);
+  if (view === 'positive-catalysts')
+    return copy.filter((item) => item.context?.catalystDirection === 'potentially-supportive');
+  if (view === 'negative-catalysts')
+    return copy.filter((item) => item.context?.catalystDirection === 'potentially-adverse');
+  if (view === 'context-conflicts')
+    return copy.filter((item) => (item.context?.contextConflicts.length ?? 0) > 0);
+  if (view === 'market-context') return copy.filter((item) => item.context?.marketContext);
+  if (view === 'sector-context') return copy.filter((item) => item.context?.sectorContext);
   return copy;
 };
 
@@ -71,6 +100,20 @@ export function OpportunityWorkspace({
             {item.warnings.length ? (
               <Text style={styles.warning}>Warnings: {item.warnings.join(' • ')}</Text>
             ) : null}
+            {item.context ? (
+              <View>
+                <Text style={styles.context}>Catalysts: {item.context.catalystSummary}</Text>
+                <Text style={styles.meta}>
+                  Upcoming {item.context.upcomingCatalystCount} • Recent{' '}
+                  {item.context.recentCatalystCount} • Context {item.context.dataStatus}
+                </Text>
+                {item.context.contextConflicts.length ? (
+                  <Text style={styles.warning}>
+                    Context conflicts: {item.context.contextConflicts.join(' • ')}
+                  </Text>
+                ) : null}
+              </View>
+            ) : null}
           </Card>
         ))
       )}
@@ -97,4 +140,5 @@ const styles = StyleSheet.create({
   positive: { color: theme.colors.success, marginTop: theme.spacing.sm },
   negative: { color: theme.colors.danger, marginTop: theme.spacing.xs },
   warning: { color: theme.colors.warning, marginTop: theme.spacing.xs },
+  context: { color: theme.colors.textMuted, marginTop: theme.spacing.sm },
 });

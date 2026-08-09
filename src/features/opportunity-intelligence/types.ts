@@ -1,4 +1,10 @@
 import type {
+  CatalystFeed,
+  MarketContext,
+  OpportunityContext,
+  SectorContext,
+} from '@/features/catalyst-intelligence';
+import type {
   QuantitativeAssessment,
   QuantitativeComponentName,
   QuantitativeDataStatus,
@@ -36,6 +42,10 @@ export interface OpportunityCandidate {
   historyAvailable?: boolean;
   assessedAt?: string | null;
   sourceFreshness?: 'current' | 'stale' | 'unknown';
+  /** Optional provider-normalized context; absence never creates synthetic events. */
+  catalystFeed?: CatalystFeed;
+  marketContext?: MarketContext;
+  sectorContext?: SectorContext;
 }
 
 export interface OpportunityConflict extends SignalConflict {
@@ -88,6 +98,8 @@ export interface RankedOpportunity {
   dataStatus: OpportunityDataStatus;
   provenance: string[];
   explanation: string;
+  /** Sprint 2.6 enrichment. Optional to preserve Sprint 2.5 consumers. */
+  context?: OpportunityContext;
 }
 
 export interface OpportunityRankingOptions {
@@ -103,6 +115,9 @@ export interface WatchlistOpportunityInput {
   displayName: string | null;
   assessment: QuantitativeAssessment;
   supportedTimeframes: OpportunityTimeframe[];
+  catalystFeed?: CatalystFeed;
+  marketContext?: MarketContext;
+  sectorContext?: SectorContext;
 }
 
 export interface PortfolioOpportunitySnapshot {

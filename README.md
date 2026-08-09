@@ -168,6 +168,35 @@ boundary; provider keys and service credentials belong only in server-side secre
 
 ## Integration boundaries
 
+## Sprint 2.6: catalyst and market context intelligence
+
+Sprint 2.6 adds `src/features/catalyst-intelligence`, a provider-neutral context layer that consumes
+the existing quantitative opportunity result rather than recalculating or modifying its score.
+Strongly typed contracts cover earnings and guidance, filings, corporate actions, ratings, product
+and regulatory events, M&A, management, dilution, capital returns, contracts, legal matters,
+announcements, and sector/macro/market events. Each event separates lifecycle phase, verification,
+availability, scope, impact direction, magnitude, horizon, confidence, quality, freshness, risks,
+dates or windows when supplied, and source provenance.
+
+Impact assessment is deterministic and uses cautious labels—potentially supportive, potentially
+adverse, mixed, unclear, or insufficient evidence. It does not infer price outcomes. Opportunity
+enrichment is optional and backward compatible: catalyst summaries, counts, risks, timeline,
+market and sector context, conflicts, warnings, missing information, and quality are layered onto
+Sprint 2.5. Watchlist inputs use the same contracts, and portfolio/alert event interfaces are ready
+for later consumers without delivering notifications or financial actions.
+
+There is currently no trusted live catalyst provider. The safe default returns `UNAVAILABLE`, an
+empty event list, null confidence, and empty provenance; it never invents news or dates and never
+falls back to demo. A future adapter must normalize trusted provider data at the boundary and mark
+fixtures `DEMO` explicitly. Market and sector conditions remain distinct from company fundamentals
+and technicals. Known limitations include provider coverage, ambiguous event impact, unconfirmed
+events, delayed sources, missing timestamps, and the absence of sector-relative calibration.
+
+Future alert delivery may consume the alert-ready contracts for new/approaching/changed catalysts,
+filings, earnings, guidance, regulatory, sector, market, risk, and conflict events. Brokerage,
+account linking, trading, wallets, deposits, withdrawals, payments, and client-side secrets remain
+separate future secure-infrastructure phases and are expressly outside this intelligence layer.
+
 - **Supabase:** call `getSupabaseClient()` from `src/lib/supabase.ts`. The client is initialized
   lazily, persists native sessions with AsyncStorage, and manages token refresh with app state.
 - **OpenAI:** call the project's trusted API through `apiRequest()` in `src/services/api.ts`.
