@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { RefreshControl, StyleSheet, Text, View } from 'react-native';
 
 import { Card, ScreenContainer, SectionTitle } from '@/components';
@@ -12,6 +13,7 @@ import {
 import { theme } from '@/theme';
 
 export default function WatchlistScreen() {
+  const router = useRouter();
   const investments = useInvestments();
   return (
     <ScreenContainer
@@ -55,6 +57,7 @@ export default function WatchlistScreen() {
       ) : investments.watchlistQuotes && investments.watchlistQuotes.length > 0 ? (
         <WatchlistCard
           quotes={investments.watchlistQuotes}
+          onResearch={(symbol) => router.push(`/research/${symbol}`)}
           onRemove={(symbol) => void investments.removeFromWatchlist(symbol)}
         />
       ) : (

@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { StyleSheet, Text, View, Pressable } from 'react-native';
 
 import { DashboardCard, ScreenContainer, SectionTitle } from '@/components';
 import { useInvestments } from '@/features/investments';
@@ -23,6 +24,7 @@ function GoldIcon({ children }: { children: string }) {
 }
 
 export default function DashboardScreen() {
+  const router = useRouter();
   const investments = useInvestments();
   const quotes = useQuotes(dashboardSymbols);
   const marketStatus = useMarketStatus();
@@ -78,7 +80,13 @@ export default function DashboardScreen() {
               <Text style={styles.detail}>No watched symbols yet. Add one from Watchlist.</Text>
             ) : (
               watchlist.map((quote, index) => (
-                <QuoteRow bordered={index > 0} key={quote.symbol} quote={quote} />
+                <Pressable
+                  key={quote.symbol}
+                  onPress={() => router.push(`/research/${quote.symbol}`)}
+                >
+                  <QuoteRow bordered={index > 0} quote={quote} />
+                  <Text style={styles.researchLink}>OPEN RESEARCH →</Text>
+                </Pressable>
               ))
             )}
           </DashboardCard>
@@ -288,5 +296,12 @@ const styles = StyleSheet.create({
     color: theme.colors.textSubtle,
     fontSize: theme.typography.fontSize.xs,
     textAlign: 'center',
+  },
+  researchLink: {
+    color: theme.colors.primary,
+    fontSize: 9,
+    fontWeight: '700',
+    letterSpacing: 0.6,
+    paddingBottom: theme.spacing.sm,
   },
 });

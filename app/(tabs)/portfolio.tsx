@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { RefreshControl, StyleSheet, Text } from 'react-native';
 
@@ -13,6 +14,7 @@ import {
 import { theme } from '@/theme';
 
 export default function PortfolioScreen() {
+  const router = useRouter();
   const investments = useInvestments();
   const [editing, setEditing] = useState<EnrichedPosition | null>(null);
   return (
@@ -58,6 +60,7 @@ export default function PortfolioScreen() {
             <PortfolioRow
               key={position.id}
               position={position}
+              onResearch={() => router.push(`/research/${position.symbol}`)}
               onEdit={() => setEditing(position)}
               onRemove={() => void investments.removePosition(position.symbol)}
             />

@@ -2,6 +2,24 @@
 
 All notable changes to Seals AI Capital are documented in this file.
 
+## Sprint 1.8 — 2026-08-08
+
+### Added
+
+- Provider-neutral research models, validation, replaceable services, local demo adapter, and deduplicated cached hooks with normalized lifecycle states.
+- Symbol-driven workspace covering identity, performance, fundamentals, technicals, news, thesis, risks, monitoring, and local notes.
+- Research navigation from Watchlist, Portfolio, and Dashboard symbols.
+
+### Security
+
+- Added no privileged key, broker integration, order behavior, Supabase client, or migration. Device-local notes are partitioned by authenticated user ID.
+- Reserved live research and AI provider calls for a trusted backend or Edge Function.
+
+### Notes
+
+- Demo content is illustrative and labeled. Missing metrics and historical series are unavailable; the app does not fabricate a live chart or claim AI analysis.
+- Notes are local and do not sync. Visual verification requires a configured Expo environment.
+
 ## Sprint 1.7 — 2026-08-08
 
 ### Added
