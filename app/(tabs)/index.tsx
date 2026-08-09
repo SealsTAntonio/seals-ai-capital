@@ -57,6 +57,21 @@ export default function DashboardScreen() {
       <SectionTitle>DAILY INTELLIGENCE</SectionTitle>
       <View style={styles.grid}>
         <View style={styles.gridItem}>
+          <DashboardCard icon={<GoldIcon>⌁</GoldIcon>} title="Technical Analysis">
+            <Pressable
+              onPress={() => router.push(`/technical/${investments.watchlist[0]?.symbol ?? 'SPY'}`)}
+            >
+              <Text style={styles.confidence}>HISTORICAL DATA • PROVIDER STATUS REQUIRED</Text>
+              <Text style={styles.insightTitle}>Open technical workspace</Text>
+              <Text style={styles.detail}>
+                Indicators remain unavailable unless a trusted historical candle provider supplies
+                validated data.
+              </Text>
+              <Text style={styles.researchLink}>OPEN TECHNICALS →</Text>
+            </Pressable>
+          </DashboardCard>
+        </View>
+        <View style={styles.gridItem}>
           <DashboardCard icon={<GoldIcon>ƒ</GoldIcon>} title="Fundamental Snapshot">
             <Pressable
               onPress={() =>

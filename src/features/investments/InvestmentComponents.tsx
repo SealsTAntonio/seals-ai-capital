@@ -149,7 +149,7 @@ export function WatchlistCard({
             <Text style={styles.status}>{quote.marketStatus.toUpperCase()}</Text>
             {onResearch ? (
               <Pressable onPress={() => onResearch(quote.symbol)}>
-                <Text style={styles.link}>RESEARCH</Text>
+                <Text style={styles.link}>TECHNICALS</Text>
               </Pressable>
             ) : null}
             <WatchlistButton watched saving={false} onPress={() => onRemove(quote.symbol)} />
@@ -338,7 +338,7 @@ export function PortfolioRow({
       <View style={styles.actions}>
         {onResearch ? (
           <Pressable onPress={onResearch}>
-            <Text style={styles.link}>RESEARCH</Text>
+            <Text style={styles.link}>TECHNICALS</Text>
           </Pressable>
         ) : null}
         <Pressable onPress={onEdit}>

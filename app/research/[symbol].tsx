@@ -26,6 +26,9 @@ export default function ResearchScreen() {
           <Pressable style={styles.newsLink} onPress={() => router.push(`/news/${symbol}`)}>
             <Text style={styles.newsText}>OPEN {symbol} NEWS & CATALYSTS →</Text>
           </Pressable>
+          <Pressable style={styles.newsLink} onPress={() => router.push(`/technical/${symbol}`)}>
+            <Text style={styles.newsText}>OPEN TECHNICAL ANALYSIS →</Text>
+          </Pressable>
           <ResearchWorkspace symbol={symbol} />
         </>
       ) : null}

@@ -60,7 +60,7 @@ export default function PortfolioScreen() {
             <PortfolioRow
               key={position.id}
               position={position}
-              onResearch={() => router.push(`/fundamentals/${position.symbol}`)}
+              onResearch={() => router.push(`/technical/${position.symbol}`)}
               onEdit={() => setEditing(position)}
               onRemove={() => void investments.removePosition(position.symbol)}
             />
