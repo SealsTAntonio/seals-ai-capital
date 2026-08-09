@@ -2,6 +2,20 @@
 
 All notable changes to Seals AI Capital are documented in this file.
 
+## Sprint 2.5 — 2026-08-09
+
+### Added
+
+- Strongly typed, provider-neutral opportunity candidates, ranked results, portfolio snapshots, and alert-ready change-event contracts built directly on Sprint 2.4 assessments.
+- Deterministic ranking with explicit tie handling, timeframe support, classification, confidence, signal agreement/conflicts, evidence-driven explanations, provenance, and quality states.
+- A reusable opportunity workspace with top, bullish, bearish, confidence, momentum, risk, conflict, and incomplete views, plus a Watchlist adapter that uses the shared scoring output.
+- Automated coverage for ranking, ties, normalization boundaries, confidence, missing/partial/error/demo data, agreement/conflicts, classifications, timeframe handling, Watchlist use, provenance, and no-fallback behavior.
+
+### Security and limitations
+
+- Opportunity labels are analytical research classifications, not trading instructions or guaranteed returns. Thresholds are not backtested, sector-relative, or predictive.
+- No brokerage link, credential, order, execution, wallet, payment, deposit, withdrawal, push delivery, secret, migration, or additional Supabase client was added. Missing data remains unavailable and provider failure never falls back to demo.
+
 ## Sprint 2.4 — 2026-08-09
 
 ### Added
