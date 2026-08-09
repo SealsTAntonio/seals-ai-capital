@@ -271,3 +271,22 @@ All notable changes to Seals AI Capital are documented in this file.
 
 - No trusted historical candle provider is configured in this sprint. The default workspace is explicitly unavailable; it never creates or presents fabricated live candles, prices, indicators, or signals and never silently falls back to demo after an error.
 - Demo provenance is supported for explicitly installed illustrative fixtures, but no default candle fixture pretends to be live. Technical classifications and scores are descriptive, not Buy/Sell recommendations or profit guarantees.
+
+# Sprint 2.8 — 2026-08-09
+
+### Added
+
+- Strongly typed, provider-neutral portfolio snapshot, exposure, allocation, concentration,
+  diversification, correlation, risk-budget, opportunity-fit, conflict, quality, provenance, and
+  readiness contracts.
+- Deterministic portfolio assessment with explicit supplied/derived/unavailable lineage,
+  transparent concentration bands, no invented correlation/budget/targets, and structured conflict
+  evidence.
+- Optional Portfolio Intelligence workspace and backward-compatible opportunity-card enrichment.
+- Deterministic coverage for exposure, allocation, unavailable inputs, provenance, stale data,
+  incomplete holdings, and invalid numeric values.
+
+### Security
+
+- Portfolio Intelligence is analytical only. No brokerage, account, balance, credential, payment,
+  wallet, key, secret, order, transaction, execution, or automated-trading integration was added.
