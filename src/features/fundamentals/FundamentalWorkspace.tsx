@@ -28,11 +28,15 @@ const sections: { title: string; items: [FundamentalMetricKey, string][] }[] = [
     title: 'FINANCIAL HEALTH',
     items: [
       ['totalCash', 'Cash'],
+      ['totalAssets', 'Total assets'],
+      ['totalLiabilities', 'Total liabilities'],
+      ['shareholdersEquity', "Shareholders' equity"],
       ['totalDebt', 'Debt'],
       ['netDebt', 'Net debt'],
       ['debtToEquity', 'Debt / equity'],
       ['currentRatio', 'Current ratio'],
       ['operatingCashFlow', 'Operating cash flow'],
+      ['capitalExpenditures', 'Capital expenditures'],
       ['freeCashFlow', 'Free cash flow'],
     ],
   },
@@ -70,7 +74,7 @@ export function FundamentalWorkspace({ symbol }: { symbol: string }) {
     return (
       <View style={styles.state}>
         <ActivityIndicator color={theme.colors.primary} />
-        <Text style={styles.muted}>Loading fundamental framework…</Text>
+        <Text style={styles.muted}>Loading fundamental data…</Text>
       </View>
     );
   if (resource.error)
@@ -95,11 +99,19 @@ export function FundamentalWorkspace({ symbol }: { symbol: string }) {
       />
     );
   const d = resource.data;
+  const isDemo = d.environment === 'demo';
   return (
     <View style={styles.root}>
-      <View style={styles.banner}>
-        <Text style={styles.bannerTitle}>DEMO / ILLUSTRATIVE FOUNDATION</Text>
+      <View style={[styles.banner, !isDemo && styles.realBanner]}>
+        <Text style={[styles.bannerTitle, !isDemo && styles.realBannerTitle]}>
+          {isDemo
+            ? 'DEMO / ILLUSTRATIVE'
+            : d.dataStatus === 'partial'
+              ? 'REAL DATA • PARTIAL'
+              : 'REAL DATA'}
+        </Text>
         <Text style={styles.muted}>{d.disclaimer}</Text>
+        {resource.refreshing ? <Text style={styles.retrying}>RETRYING / REFRESHING…</Text> : null}
       </View>
       <Card
         title={d.company.name}
@@ -108,10 +120,22 @@ export function FundamentalWorkspace({ symbol }: { symbol: string }) {
         <View style={styles.grid}>
           <Fact label="Sector" value={d.company.sector} />
           <Fact label="Industry" value={d.company.industry} />
+          <Fact label="CIK" value={d.company.cik} />
           <Fact label="Market cap" value={format(d.metrics, 'marketCapitalization')} />
           <Fact label="Source" value={d.source} />
+          <Fact label="Source URL" value={d.sourceUrl} />
           <Fact label="Status" value={d.dataStatus} />
-          <Fact label="Freshness" value={resource.stale ? 'STALE' : 'Current demo snapshot'} />
+          <Fact label="Provider" value={d.providerName} />
+          <Fact
+            label="Filing"
+            value={d.filingDate ? `${d.formType ?? 'Form unavailable'} • ${d.filingDate}` : null}
+          />
+          <Fact label="Fiscal period" value={d.period.reportingPeriodEnd} />
+          <Fact label="Retrieved" value={new Date(d.fetchedAt).toLocaleString()} />
+          <Fact
+            label="Freshness"
+            value={resource.stale ? 'STALE — refresh available' : 'Cached up to 15 minutes'}
+          />
         </View>
       </Card>
       {sections.map((section) => (
@@ -160,7 +184,16 @@ export function FundamentalWorkspace({ symbol }: { symbol: string }) {
           message="No annual history was supplied. Values are not fabricated."
         />
       ) : (
-        <Text style={styles.muted}>{history.data?.length} annual periods available.</Text>
+        <Card compact title={`${history.data?.length ?? 0} annual periods`}>
+          {history.data?.map((period) => (
+            <View key={period.reportingPeriodEnd ?? period.fiscalYear} style={styles.row}>
+              <Text style={styles.label}>FY {period.fiscalYear}</Text>
+              <Text style={styles.value}>
+                {format(period.metrics as FundamentalMetrics, 'revenue')}
+              </Text>
+            </View>
+          ))}
+        </Card>
       )}
     </View>
   );
@@ -188,6 +221,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: theme.typography.fontSize.sm,
   },
+  realBanner: { backgroundColor: theme.colors.surfaceElevated, borderColor: theme.colors.success },
+  realBannerTitle: { color: theme.colors.success },
   muted: { color: theme.colors.textMuted, fontSize: theme.typography.fontSize.sm, lineHeight: 20 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing.md },
   fact: { minWidth: 140, flex: 1 },
@@ -220,4 +255,5 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   link: { color: theme.colors.primary, fontSize: theme.typography.fontSize.xs, fontWeight: '700' },
+  retrying: { color: theme.colors.warning, fontSize: 10, fontWeight: '700', marginTop: 6 },
 });

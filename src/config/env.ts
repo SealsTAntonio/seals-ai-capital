@@ -7,6 +7,11 @@ export type MarketDataEnvironment = {
   mode: 'demo' | 'backend';
 };
 
+export type FundamentalDataEnvironment = {
+  mode: 'demo' | 'sec';
+  secUserAgent: string | null;
+};
+
 function requirePublicVariable(name: string, value: string | undefined): string {
   if (!value) {
     throw new Error(`Missing required public environment variable: ${name}`);
@@ -44,4 +49,17 @@ export function getMarketDataEnvironment(): MarketDataEnvironment {
     throw new Error('EXPO_PUBLIC_MARKET_DATA_MODE must be "demo" or "backend".');
   }
   return { mode };
+}
+
+/** Selects the public SEC adapter. The identifying user agent is public, not a credential. */
+export function getFundamentalDataEnvironment(): FundamentalDataEnvironment {
+  const mode = process.env.EXPO_PUBLIC_FUNDAMENTAL_DATA_MODE ?? 'demo';
+  if (mode !== 'demo' && mode !== 'sec') {
+    throw new Error('EXPO_PUBLIC_FUNDAMENTAL_DATA_MODE must be "demo" or "sec".');
+  }
+  const secUserAgent = process.env.EXPO_PUBLIC_SEC_USER_AGENT?.trim() || null;
+  if (mode === 'sec' && !secUserAgent) {
+    throw new Error('EXPO_PUBLIC_SEC_USER_AGENT is required in SEC fundamental data mode.');
+  }
+  return { mode, secUserAgent };
 }

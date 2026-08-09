@@ -1,5 +1,6 @@
 export type DataClassification = 'available' | 'unavailable' | 'estimated' | 'historical';
-export type DataEnvironment = 'demo' | 'live';
+export type DataEnvironment = 'demo' | 'real';
+export type FundamentalDataStatus = 'populated' | 'partial' | 'empty' | 'unavailable';
 export type FundamentalFrequency = 'annual' | 'quarterly';
 
 export interface FundamentalMetric {
@@ -25,6 +26,7 @@ export interface CompanyIdentity {
   exchange: string | null;
   sector: string | null;
   industry: string | null;
+  cik: string | null;
 }
 
 export type FundamentalMetricKey =
@@ -43,7 +45,11 @@ export type FundamentalMetricKey =
   | 'freeCashFlowGrowth'
   | 'freeCashFlowMargin'
   | 'operatingCashFlow'
+  | 'capitalExpenditures'
   | 'totalCash'
+  | 'totalAssets'
+  | 'totalLiabilities'
+  | 'shareholdersEquity'
   | 'totalDebt'
   | 'netDebt'
   | 'debtToEquity'
@@ -104,7 +110,11 @@ export interface FundamentalSnapshot {
   scoreInputs: ScoreInput[];
   source: string;
   environment: DataEnvironment;
-  dataStatus: 'populated' | 'partial' | 'empty' | 'unavailable';
+  dataStatus: FundamentalDataStatus;
+  sourceUrl: string | null;
+  providerName: string;
+  filingDate: string | null;
+  formType: string | null;
   fetchedAt: string;
   staleAfter: string;
   disclaimer: string;
@@ -135,4 +145,20 @@ export interface FundamentalAnalysisService {
   ): Promise<FundamentalResponse<HistoricalFundamentals[]>>;
   getFundamentalSummary(symbol: string): Promise<FundamentalResponse<FundamentalSnapshot>>;
   getFundamentalScoreInputs(symbol: string): Promise<FundamentalResponse<ScoreInput[]>>;
+}
+
+/** Provider adapter contract. Provider payloads must be normalized before crossing this boundary. */
+export interface FundamentalDataProvider {
+  readonly name: string;
+  getSnapshot(symbol: string): Promise<FundamentalSnapshot | null>;
+}
+
+export class FundamentalDataError extends Error {
+  constructor(
+    message: string,
+    readonly code: 'invalid-symbol' | 'network' | 'rate-limited' | 'unavailable' | 'source-error',
+  ) {
+    super(message);
+    this.name = 'FundamentalDataError';
+  }
 }
