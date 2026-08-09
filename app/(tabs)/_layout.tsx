@@ -9,6 +9,7 @@ const icons: Record<string, string> = {
   ask: '✦',
   watchlist: '★',
   portfolio: '◒',
+  news: '▤',
   settings: '⚙',
 };
 
@@ -33,6 +34,7 @@ export default function TabLayout() {
       <Tabs.Screen name="ask" options={{ title: 'Ask AI' }} />
       <Tabs.Screen name="watchlist" options={{ title: 'Watchlist' }} />
       <Tabs.Screen name="portfolio" options={{ title: 'Portfolio' }} />
+      <Tabs.Screen name="news" options={{ title: 'News' }} />
       <Tabs.Screen name="settings" options={{ title: 'More' }} />
       <Tabs.Screen name="day-trading" options={{ href: null }} />
       <Tabs.Screen name="congressional-intelligence" options={{ href: null }} />

@@ -164,3 +164,11 @@ authenticated user ID. No migration or manual Supabase step is required and note
 future Supabase implementation must reuse the centralized client with owner-only CRUD RLS, indexes,
 and timestamps. Visual verification requires a configured Expo runtime and public Supabase values
 and was unavailable in this repository environment.
+
+## Sprint 1.9 — News & Catalyst Intelligence Foundation
+
+News follows `NewsService → deduplicated cached hooks → reusable components → market, personalized, and symbol workspaces`. Provider-neutral models cover sources, articles, events, categories, impact, sentiment, catalysts, importance, status, relevance, relationships, tags, and company summaries. Search accepts symbols, companies, headlines, categories, and catalyst types at the service boundary.
+
+The isolated local adapter contains only labeled illustrative UI scenarios. It supplies no external URL or claimed real-world event timestamp and never represents content as live. A trusted adapter can be installed with `setNewsService` without changing UI and must normalize validated backend responses.
+
+News cards request market context through Sprint 1.6 hooks; News never supplies prices. Personalized views consume symbols from Sprint 1.7's authenticated investment provider, without reimplementing ownership. Research links to the shared symbol workspace. Saved notes use user-ID-partitioned local AsyncStorage, require no migration, and do not sync. A future persistent service must reuse the centralized Supabase client with owner-only RLS. Live news requires a trusted backend and approved provider; provider secrets, service-role keys, brokerage credentials, and trading remain excluded.

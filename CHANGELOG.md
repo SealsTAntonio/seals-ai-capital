@@ -2,6 +2,24 @@
 
 All notable changes to Seals AI Capital are documented in this file.
 
+## Sprint 1.9 — 2026-08-09
+
+### Added
+
+- Strict provider-neutral news, source, event, catalyst, company summary, query, lifecycle, and normalized response contracts.
+- Replaceable local demo adapter, deduplicated cached hooks, reusable search, News workspace, symbol route, catalyst cards, market context, and private saved-news notes.
+- News views scoped to authenticated Watchlist and Portfolio symbols plus restrained Dashboard and Research integration.
+
+### Security
+
+- Added no credential, brokerage behavior, Supabase client, or migration. Existing Watchlist and Portfolio ownership remains in the investment provider and owner-scoped Supabase service/RLS.
+- Saved-news notes are partitioned by authenticated user ID in device-local storage. Future providers must run behind the trusted backend.
+
+### Notes
+
+- All fixtures are explicitly illustrative scenarios, have no source URL or real-world event timestamp, and make no claim that an event occurred. No live provider is configured.
+- Saved news does not sync. No manual Supabase step or new environment variable is required.
+
 ## Sprint 1.8 — 2026-08-08
 
 ### Added

@@ -10,14 +10,10 @@ import {
   MarketStatusBadge,
   QuoteRow,
 } from '@/features/market-data/MarketDataComponents';
+import { useMarketNews, useCatalysts } from '@/features/news';
 import { theme } from '@/theme';
 
 const dashboardSymbols = ['SPY', 'QQQ', 'VIX', 'NVDA', 'MSFT', 'AMZN'];
-
-const news = [
-  ['Markets weigh rate outlook as technology leads', '12 MIN AGO'],
-  ['Semiconductor demand remains resilient into Q3', '38 MIN AGO'],
-] as const;
 
 function GoldIcon({ children }: { children: string }) {
   return <Text style={styles.icon}>{children}</Text>;
@@ -28,6 +24,8 @@ export default function DashboardScreen() {
   const investments = useInvestments();
   const quotes = useQuotes(dashboardSymbols);
   const marketStatus = useMarketStatus();
+  const marketNews = useMarketNews({ limit: 2 });
+  const catalysts = useCatalysts({ limit: 1 });
   const pulse = quotes.data?.filter((quote) => ['SPY', 'QQQ', 'VIX'].includes(quote.symbol)) ?? [];
   const watchlist = investments.watchlistQuotes?.slice(0, 3) ?? [];
   return (
@@ -148,16 +146,25 @@ export default function DashboardScreen() {
           </DashboardCard>
         </View>
         <View style={styles.gridItem}>
-          <DashboardCard icon={<GoldIcon>▤</GoldIcon>} title="Market News">
-            {news.map(([headline, time], index) => (
-              <View key={headline} style={[styles.newsRow, index > 0 && styles.rowBorder]}>
-                <View style={styles.newsDot} />
-                <View style={styles.rowCopy}>
-                  <Text style={styles.newsTitle}>{headline}</Text>
-                  <Text style={styles.caption}>{time}</Text>
+          <DashboardCard action="OPEN NEWS" icon={<GoldIcon>▤</GoldIcon>} title="News & Catalysts">
+            <Pressable onPress={() => router.push('/news')}>
+              <Text style={styles.confidence}>DEMO • ILLUSTRATIVE • NOT LIVE NEWS</Text>
+              {marketNews.data?.map((item, index) => (
+                <View key={item.id} style={[styles.newsRow, index > 0 && styles.rowBorder]}>
+                  <View style={styles.newsDot} />
+                  <View style={styles.rowCopy}>
+                    <Text style={styles.newsTitle}>{item.headline}</Text>
+                    <Text style={styles.caption}>{item.source.name} • NO REAL-WORLD TIMESTAMP</Text>
+                  </View>
                 </View>
-              </View>
-            ))}
+              ))}
+              {catalysts.data?.[0] ? (
+                <Text style={styles.detail}>CATALYST FRAMEWORK • {catalysts.data[0].title}</Text>
+              ) : null}
+              {!marketNews.loading && !marketNews.data?.length ? (
+                <Text style={styles.detail}>No market coverage supplied.</Text>
+              ) : null}
+            </Pressable>
           </DashboardCard>
         </View>
       </View>
