@@ -290,3 +290,19 @@ All notable changes to Seals AI Capital are documented in this file.
 
 - Portfolio Intelligence is analytical only. No brokerage, account, balance, credential, payment,
   wallet, key, secret, order, transaction, execution, or automated-trading integration was added.
+
+# Sprint 2.9 — 2026-08-09
+
+### Added
+
+- Provider-neutral Signal Fusion contracts and a pure, deterministic orchestration engine over the authoritative Sprint 2.4–2.8 assessments.
+- Inspectable component weights, agreement and conflict records, confidence factors, timeframe divergence, provenance, data-quality gates, readiness, and research-only decision classifications.
+- Optional Signal Fusion & Decision Intelligence workspace card and deterministic unit coverage for alignment, missing/stale/provider-unavailable evidence, validation, conflicts, provenance, timeframes, and explanations.
+
+### Security
+
+- Signal Fusion remains analytical and explicitly non-executable. No brokerage, account, wallet, credential, private-key, payment, transaction, order, privileged Supabase, or automated-trading capability was added.
+
+### Limitations
+
+- Fusion can only interpret supplied upstream assessments. It does not source market data, infer absent catalysts/portfolio holdings, reconcile provider identities, or predict price movement.

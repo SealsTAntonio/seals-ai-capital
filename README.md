@@ -385,3 +385,11 @@ included. Risk classifications and sizing results are analytical illustrations f
 not guarantees, financial advice, automatic Buy/Sell instructions, or authority to transact. The
 feature adds no brokerage connection, account movement, orders, wallet, payment flow, credential,
 secret, or Supabase client.
+
+## Sprint 2.9: Signal Fusion & Decision Intelligence
+
+`src/features/signal-fusion` is the provider-neutral decision-intelligence boundary. It consumes the existing composite, opportunity, catalyst, risk, portfolio-fit, technical, and fundamental outputs; it does not reproduce their calculations. `assessSignalFusion` validates bounded numerical inputs, maps authoritative assessments into inspectable supportive/neutral/opposing/unavailable components, applies explicit configurable weights, and retains every unavailable weight rather than redistributing it.
+
+The result separately reports alignment (`ALIGNED`, `MOSTLY_ALIGNED`, `MIXED`, `CONFLICTED`, `INSUFFICIENT_DATA`, or `UNAVAILABLE`), structured agreements, open conflicts, a primary timeframe, explicit cross-timeframe conflicts, component provenance, data quality, confidence factors, readiness, and a deterministic explanation. Confidence begins with usable-input completeness and is reduced by partial/stale/demo evidence and conflicts; agreement provides only a small bounded increase. Missing critical opportunity or risk intelligence gates the result, while absent catalyst and portfolio intelligence remain explicitly unavailable.
+
+Decision labels such as `HIGH_CONVICTION_RESEARCH` and `SUPPORTIVE_RESEARCH` describe analytical support for **further research only**. They are not Buy/Sell recommendations, financial advice, forecasts, or executable trading instructions. The optional workspace card preserves all existing callers and repeats that boundary. No provider reconciliation or market prediction is attempted, and no missing signal is synthesized.
