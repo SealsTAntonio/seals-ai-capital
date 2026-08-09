@@ -2,6 +2,19 @@
 
 All notable changes to Seals AI Capital are documented in this file.
 
+## Sprint 2.4 — 2026-08-09
+
+### Added
+
+- Provider-neutral quantitative contracts and a deterministic, configurable eight-component SAC Composite Score with normalized weights and null-safe missing-data behavior.
+- Per-component contributions, factors, provenance, confidence, five-state quality, structured risk flags, incomplete metadata, and explicit conflict detection.
+- Shared Fundamental and Technical workspace presentation plus automated scoring, quality, conflict, boundary, provider-error, and finite-output coverage.
+
+### Security and limitations
+
+- Classifications are descriptive analytical assessments, not Buy/Sell instructions or guarantees. General thresholds are not yet sector-calibrated or backtested.
+- Failures never fall back to demo, demo stays illustrative, and unavailable values remain null. No secret, broker, execution, account movement, migration, or Supabase client was added.
+
 ## Sprint 2.3 — 2026-08-09
 
 ### Added
