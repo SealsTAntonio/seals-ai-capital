@@ -327,3 +327,34 @@ must be supplied by upstream integrations, and no historical performance model i
 contracts are alert-ready, but delivery is not implemented. This sprint adds no brokerage link,
 orders, trading, wallets, payments, deposits, withdrawals, client-side secrets, or financial
 transactions; future trading infrastructure remains a separate secured system.
+
+## Sprint 2.7: risk, position sizing, and trade readiness
+
+`src/features/risk-intelligence` consumes a Sprint 2.5 ranked opportunity (including optional Sprint
+2.6 context) and caller-supplied normalized risk factors. It never recalculates the Sprint 2.4
+Composite Score or Sprint 2.5 rank. Each factor retains value, weight, confidence, quality,
+provenance, missing inputs, and explanation. Valid weighted evidence produces a separate 0–100 risk
+score: 0–19 Very Low, 20–39 Low, 40–59 Moderate, 60–79 High, and 80–100 Very High. Invalid values
+are rejected rather than clamped; missing or failed evidence remains unavailable and can make the
+assessment incomplete.
+
+Opportunity/risk relationships combine Strong, Neutral, or Weak opportunity with Low, Moderate, or
+High risk. Trade readiness can be `READY_FOR_RESEARCH`, `WATCH`, `CONDITIONAL`,
+`INSUFFICIENT_DATA`, `HIGH_RISK`, `CONFLICTED`, or `NOT_READY`; even
+`READY_FOR_RESEARCH` is only a research workflow state. Structured, unresolved conflicts expose
+opportunity/risk, technical/fundamental, catalyst/volatility, momentum/trend, liquidity,
+market/sector, insufficient-data, concentration, catalyst-uncertainty, and timeframe tensions.
+
+Position sizing requires explicit inputs. Risk per share is `abs(entry - stop)` (or a supplied risk
+per share); allowed dollar risk is the smaller supplied constraint from
+`equity × maximum-risk-percent / 100` and maximum risk dollars; shares are the floor of allowed risk
+divided by risk per share, further limited by explicitly supplied notional, exposure, and
+concentration caps. No account equity, prices, stop, volatility, liquidity, or balance is invented.
+Zero risk per share is invalid rather than unlimited size.
+
+Known limitations: factors and scenario evidence must be normalized by future trusted providers;
+thresholds are not backtested or sector calibrated; no live provider or portfolio connection is
+included. Risk classifications and sizing results are analytical illustrations from supplied data,
+not guarantees, financial advice, automatic Buy/Sell instructions, or authority to transact. The
+feature adds no brokerage connection, account movement, orders, wallet, payment flow, credential,
+secret, or Supabase client.

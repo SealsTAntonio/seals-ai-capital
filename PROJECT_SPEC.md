@@ -288,3 +288,32 @@ not advice, guarantees, or executable instructions. Brokerage credentials, accou
 trade execution, cash movement, crypto wallets/trading, payments, deposits, withdrawals, and
 client-side privileged secrets remain expressly outside this architecture and reserved for a
 separate future secure infrastructure phase.
+
+## Sprint 2.7 — Risk & Trade Readiness Intelligence
+
+The provider-neutral `risk-intelligence` domain is a downstream analytical layer. Its input is the
+unchanged `RankedOpportunity` plus explicit `RiskFactor` evidence; therefore Sprint 2.4 scoring,
+Sprint 2.5 ordering, and Sprint 2.6 catalyst/context logic retain a single owner. Risk factors cover
+market, volatility, liquidity, technical, fundamental, catalyst, momentum, trend, concentration,
+event, data quality, and thesis conflict. Every factor is nullable and includes classification,
+confidence, weight, quality, provenance, missing inputs, and explanation.
+
+Only complete required evidence yields a risk score. The engine calculates a confidence-bearing
+weighted mean without clamping and rejects non-finite, negative, above-100, invalid-weight, or
+quality/value-contradictory inputs. Quality states are REAL, PARTIAL, DEMO, UNAVAILABLE, ERROR,
+MISSING, and STALE. Failures are preserved, never converted to demo or favorable zero risk.
+Opportunity/risk bands and trade-readiness states are deterministic; critical conflicts remain
+unresolved and prevent a ready state. The workspace accepts this enrichment optionally, preserving
+all existing callers.
+
+Position sizing uses only explicit account equity, percent/dollar risk, entry/stop or per-share
+risk, maximum notional, portfolio exposure, and concentration limits. It reports the binding limit,
+shares, notional, exposure, and estimated stop loss, or an explicit incomplete/invalid result.
+Portfolio preparation is a read-only contract: it cannot retrieve balances or alter an account.
+
+Limitations and boundary: normalization remains the responsibility of future provider adapters;
+methodology is a transparent heuristic rather than empirical calibration. No live provider is
+configured and no brokerage, execution, order, transaction, account movement, wallet, payment,
+credential, private key, service-role secret, or additional Supabase client exists. All risk and
+readiness classifications are analytical research outputs—not guarantees, advice, automatic
+Buy/Sell instructions, or authorization to trade.
