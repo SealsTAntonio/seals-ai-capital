@@ -271,3 +271,30 @@ Default composite weights are Fundamental 25%, Technical 25%, Momentum 15%, Tren
 Conflict metadata preserves fundamental/technical disagreement, momentum/fundamental divergence, trend/volatility tension, valuation/growth tension, and strong evidence paired with a missing domain. Quality states are `real`, `partial`, `demo`, `unavailable`, and `error`; provider errors never fall back to demo, and illustrative evidence lowers confidence.
 
 Known limitations: initial transparent normalization thresholds are general heuristics, not sector-specific or empirically calibrated factors. Existing SEC and historical-market provider coverage still applies. Future providers must return validated existing SAC contracts, preserve provenance and failures, keep credentials behind the trusted backend, and never label illustrative data live. Classifications are analytical model assessments—not Buy/Sell instructions or guarantees of investment performance.
+
+## Sprint 2.5: opportunity ranking and signal intelligence
+
+`src/features/opportunity-intelligence` consumes Sprint 2.4 `QuantitativeAssessment` objects without
+recalculating fundamentals, indicators, or composite scores. Its deterministic ranking order is
+supported timeframe, composite score, normalized confidence, then symbol. The reusable result and
+workspace contracts support top, bullish, bearish, confidence, momentum, risk, conflict, and
+incomplete views for Dashboard, Watchlist, Research, Technical, Fundamental, and Portfolio.
+
+Classifications range from Strong Bullish Opportunity through Neutral / Watch and Bearish
+Opportunity to High-Risk / Avoid. They are analytical labels, never Buy/Sell instructions or return
+guarantees. Signal agreement explicitly describes confirmed strength/weakness,
+fundamental/technical conflict, momentum-driven risk, high-risk technical setups, mixed evidence,
+and incomplete evidence. Structured conflicts remain available to downstream alert systems.
+
+Confidence combines valid-component completeness, upstream component confidence, declared
+freshness, provider status, historical availability, agreement, and a visible conflict penalty.
+Missing evidence produces `null`, not zero; unsupported timeframes produce Incomplete Assessment.
+`REAL`, `PARTIAL`, `DEMO`, `UNAVAILABLE`, `EMPTY`, and `ERROR` are downstream presentation states;
+demo is never substituted after a provider failure. Catalyst absence is unknown unless a caller
+explicitly supplies it.
+
+Known limitations: ranking is not backtested or sector-relative, freshness and supported timeframes
+must be supplied by upstream integrations, and no historical performance model is implied. Event
+contracts are alert-ready, but delivery is not implemented. This sprint adds no brokerage link,
+orders, trading, wallets, payments, deposits, withdrawals, client-side secrets, or financial
+transactions; future trading infrastructure remains a separate secured system.

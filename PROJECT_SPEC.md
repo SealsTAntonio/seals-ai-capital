@@ -220,3 +220,33 @@ The configurable default model weights Fundamental 25%, Technical 25%, Momentum 
 Structured factors remain descriptive. Conflict detection reports domain disagreement, momentum/fundamental divergence, trend with volatility risk, valuation with weaker fundamentals, and unavailable complementary domains. `real`, `partial`, `demo`, `unavailable`, and `error` propagate into confidence and incomplete metadata; errors never become demo and unavailable evidence never becomes zero.
 
 Thresholds are transparent general heuristics, not sector calibration, backtesting, a prediction, or a guarantee. Future providers must normalize into existing contracts, preserve source/freshness/error metadata and live/demo separation, and keep privileged access server-side. No trading, account movement, brokerage connection, credential, or new Supabase client is included.
+
+## Sprint 2.5 — Opportunity Ranking & Signal Intelligence
+
+The Opportunity layer accepts the exact Sprint 2.4 `QuantitativeAssessment` contract plus identity,
+requested/supported timeframes, optional catalyst availability, history availability, and freshness.
+It never derives a second composite score. Ranking is stable and deterministic: timeframe support,
+composite score, confidence, and lexical symbol are the explicit tie sequence. Watchlist integration
+adapts saved symbol/display-name records into that same boundary; portfolio snapshots expose only
+read-only intelligence fields for future consumption.
+
+Signal agreement yields a typed category, label, agreed components, agreement percentage, and
+structured conflicts. Confidence is a normalized weighted assessment of completeness (30%),
+upstream component quality (20%), freshness (10%), provider status (15%), historical availability
+(10%), and agreement (15%), less ten points per warning conflict capped at thirty. Missing or failed
+evidence returns unavailable confidence rather than manufactured certainty. Classifications use the
+existing composite result and risk component; unsupported timeframes always return Incomplete
+Assessment rather than implying cross-timeframe validity.
+
+Every ranked record retains eight nullable component scores, positive/negative evidence, strongest
+and weakest factors, warnings, missing information, timeframe, quality state, catalyst knowledge,
+and unique provenance. Explanations are assembled exclusively from those fields. Alert-ready event
+contracts cover score, classification, momentum, trend, conflict, risk, and confidence changes, but
+no delivery channel is included.
+
+General thresholds have not been sector-calibrated or validated as predictions. Provider coverage,
+freshness, history, and catalyst coverage constrain conclusions. All labels are research analytics,
+not advice, guarantees, or executable instructions. Brokerage credentials, account linking, orders,
+trade execution, cash movement, crypto wallets/trading, payments, deposits, withdrawals, and
+client-side privileged secrets remain expressly outside this architecture and reserved for a
+separate future secure infrastructure phase.
