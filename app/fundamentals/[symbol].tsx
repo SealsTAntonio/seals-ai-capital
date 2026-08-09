@@ -2,38 +2,36 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text } from 'react-native';
 
 import { ScreenContainer } from '@/components';
-import {
-  ResearchWorkspace,
-  isValidResearchSymbol,
-  normalizeResearchSymbol,
-} from '@/features/research';
+import { FundamentalWorkspace } from '@/features/fundamentals';
+import { isValidResearchSymbol, normalizeResearchSymbol } from '@/features/research';
 import { theme } from '@/theme';
-export default function ResearchScreen() {
+export default function FundamentalScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ symbol?: string | string[] }>();
   const raw = (Array.isArray(params.symbol) ? params.symbol[0] : params.symbol) ?? '';
   const symbol = normalizeResearchSymbol(raw);
   return (
     <ScreenContainer
-      eyebrow="INVESTMENT INTELLIGENCE"
-      title={isValidResearchSymbol(symbol) ? `${symbol} Research` : 'Stock Research'}
+      eyebrow="FUNDAMENTAL ANALYSIS"
+      title={isValidResearchSymbol(symbol) ? `${symbol} Fundamentals` : 'Fundamental Analysis'}
     >
       {isValidResearchSymbol(symbol) ? (
         <>
-          <Pressable style={styles.newsLink} onPress={() => router.push(`/fundamentals/${symbol}`)}>
-            <Text style={styles.newsText}>OPEN FUNDAMENTAL ANALYSIS →</Text>
+          <Pressable style={styles.link} onPress={() => router.push(`/research/${symbol}`)}>
+            <Text style={styles.text}>OPEN COMPLETE RESEARCH →</Text>
           </Pressable>
-          <Pressable style={styles.newsLink} onPress={() => router.push(`/news/${symbol}`)}>
-            <Text style={styles.newsText}>OPEN {symbol} NEWS & CATALYSTS →</Text>
-          </Pressable>
-          <ResearchWorkspace symbol={symbol} />
+          <FundamentalWorkspace symbol={symbol} />
         </>
-      ) : null}
+      ) : (
+        <Text style={styles.invalid}>
+          Select a valid ticker from Watchlist, Portfolio, Dashboard, or Research.
+        </Text>
+      )}
     </ScreenContainer>
   );
 }
 const styles = StyleSheet.create({
-  newsLink: {
+  link: {
     alignSelf: 'flex-start',
     backgroundColor: theme.colors.primarySoft,
     borderColor: theme.colors.primary,
@@ -42,9 +40,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 9,
   },
-  newsText: {
-    color: theme.colors.primary,
-    fontSize: theme.typography.fontSize.xs,
-    fontWeight: '700',
-  },
+  text: { color: theme.colors.primary, fontSize: theme.typography.fontSize.xs, fontWeight: '700' },
+  invalid: { color: theme.colors.textMuted },
 });

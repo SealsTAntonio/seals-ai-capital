@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 
 import { DashboardCard, ScreenContainer, SectionTitle } from '@/components';
+import { useFundamentals } from '@/features/fundamentals';
 import { useInvestments } from '@/features/investments';
 import { useMarketStatus, useQuotes } from '@/features/market-data';
 import {
@@ -22,6 +23,7 @@ function GoldIcon({ children }: { children: string }) {
 export default function DashboardScreen() {
   const router = useRouter();
   const investments = useInvestments();
+  const fundamentals = useFundamentals(investments.watchlist[0]?.symbol ?? 'SPY');
   const quotes = useQuotes(dashboardSymbols);
   const marketStatus = useMarketStatus();
   const marketNews = useMarketNews({ limit: 2 });
@@ -54,6 +56,25 @@ export default function DashboardScreen() {
       </View>
       <SectionTitle>DAILY INTELLIGENCE</SectionTitle>
       <View style={styles.grid}>
+        <View style={styles.gridItem}>
+          <DashboardCard icon={<GoldIcon>ƒ</GoldIcon>} title="Fundamental Snapshot">
+            <Pressable
+              onPress={() =>
+                router.push(`/fundamentals/${investments.watchlist[0]?.symbol ?? 'SPY'}`)
+              }
+            >
+              <Text style={styles.confidence}>DEMO • SCORE FOUNDATION</Text>
+              <Text style={styles.insightTitle}>
+                {fundamentals.loading ? 'Loading framework…' : 'Metrics unavailable'}
+              </Text>
+              <Text style={styles.detail}>
+                Growth, profitability, valuation, and financial strength remain explicitly
+                unavailable until a trusted provider is connected.
+              </Text>
+              <Text style={styles.researchLink}>OPEN FUNDAMENTALS →</Text>
+            </Pressable>
+          </DashboardCard>
+        </View>
         <View style={styles.gridItem}>
           <DashboardCard icon={<GoldIcon>↗</GoldIcon>} title="Market Overview">
             <View style={styles.breadth}>
