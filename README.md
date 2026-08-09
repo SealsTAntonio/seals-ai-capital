@@ -261,3 +261,13 @@ factor. Signals and scores are descriptive technical conditions—not prediction
 or Buy/Sell instructions. The default provider remains unavailable; credentialed providers stay
 behind the trusted backend, and no trading, brokerage, secret, migration, or second Supabase client
 is included.
+
+## Sprint 2.4: quantitative signal fusion and stock scoring
+
+`src/features/quantitative-intelligence` combines the existing normalized Fundamental and Technical domains; it does not recalculate their statements or indicators. The provider-neutral `QuantitativeSignalProvider` supplies those results to one deterministic service reusable by Research, Dashboard, Watchlist, Portfolio, and symbol workspaces. The Fundamental and Technical workspaces expose the same score card rather than owning separate engines.
+
+Default composite weights are Fundamental 25%, Technical 25%, Momentum 15%, Trend 10%, Volume 5%, volatility/risk 10%, Valuation 5%, and Quality 5%. Callers may override weights; the service validates and normalizes the model. Missing components are `null`, never zero, and available weights are renormalized. Every component reports configured/effective weight, contribution, factors, missing inputs, provenance, status, and confidence. Bands are 90–100 Exceptional, 80–89 Strong, 70–79 Constructive, 60–69 Neutral, 50–59 Weak, and 0–49 High Risk / Weak.
+
+Conflict metadata preserves fundamental/technical disagreement, momentum/fundamental divergence, trend/volatility tension, valuation/growth tension, and strong evidence paired with a missing domain. Quality states are `real`, `partial`, `demo`, `unavailable`, and `error`; provider errors never fall back to demo, and illustrative evidence lowers confidence.
+
+Known limitations: initial transparent normalization thresholds are general heuristics, not sector-specific or empirically calibrated factors. Existing SEC and historical-market provider coverage still applies. Future providers must return validated existing SAC contracts, preserve provenance and failures, keep credentials behind the trusted backend, and never label illustrative data live. Classifications are analytical model assessments—not Buy/Sell instructions or guarantees of investment performance.

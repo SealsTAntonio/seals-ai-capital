@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Card, EmptyState, SectionTitle } from '@/components';
+import { QuantitativeScoreCard } from '@/features/quantitative-intelligence';
 import { theme } from '@/theme';
 
 import { useTechnicalAnalysis } from './hooks';
@@ -121,6 +122,7 @@ function Analysis({
               </View>
             ))}
           </Card>
+          <QuantitativeScoreCard symbol={p.symbol} technical={data} />
           <SectionTitle>TREND</SectionTitle>
           <Card title="Trend direction">
             <View style={styles.grid}>

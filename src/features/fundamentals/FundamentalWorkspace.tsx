@@ -1,6 +1,7 @@
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Card, EmptyState, SectionTitle } from '@/components';
+import { QuantitativeScoreCard } from '@/features/quantitative-intelligence';
 import { theme } from '@/theme';
 
 import { useFundamentals, useHistoricalFundamentals } from './hooks';
@@ -170,6 +171,7 @@ export function FundamentalWorkspace({ symbol }: { symbol: string }) {
           </View>
         ))}
       </Card>
+      <QuantitativeScoreCard symbol={symbol} fundamental={d} />
       <SectionTitle>HISTORICAL FUNDAMENTALS</SectionTitle>
       {history.loading ? (
         <ActivityIndicator color={theme.colors.primary} />

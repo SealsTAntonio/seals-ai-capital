@@ -210,3 +210,13 @@ and range-proximity conditions. The explainable 0–100 score retains weighted f
 0–20 to very bearish, 21–40 bearish, 41–59 mixed, 60–79 bullish, and 80–100 very bullish context.
 It is technical context, not advice, a prediction, or an execution instruction. No provider secret,
 Supabase client, migration, broker connection, order action, or transaction was added.
+
+## Sprint 2.4 — Quantitative Signal Fusion & Stock Scoring
+
+Quantitative intelligence follows `QuantitativeSignalProvider → QuantitativeIntelligenceService → shared score presentation`. It consumes existing Fundamental Snapshot and Technical Analysis contracts rather than duplicating calculations or provider clients. The boundary is independent of SEC concepts, market vendors, Supabase, OpenAI, brokerages, and execution systems, allowing every workspace to use one deterministic engine.
+
+The configurable default model weights Fundamental 25%, Technical 25%, Momentum 15%, Trend 10%, Volume 5%, volatility/risk 10%, Valuation 5%, and Quality 5%. Valid weights are normalized; available evidence is reweighted when inputs are missing, while missing values remain null. Each 0–100 component exposes score, configured/effective weight, contribution, factors, missing inputs, provenance, five-state quality, and confidence. Composite classifications are Exceptional (90–100), Strong (80–89), Constructive (70–79), Neutral (60–69), Weak (50–59), and High Risk / Weak (0–49).
+
+Structured factors remain descriptive. Conflict detection reports domain disagreement, momentum/fundamental divergence, trend with volatility risk, valuation with weaker fundamentals, and unavailable complementary domains. `real`, `partial`, `demo`, `unavailable`, and `error` propagate into confidence and incomplete metadata; errors never become demo and unavailable evidence never becomes zero.
+
+Thresholds are transparent general heuristics, not sector calibration, backtesting, a prediction, or a guarantee. Future providers must normalize into existing contracts, preserve source/freshness/error metadata and live/demo separation, and keep privileged access server-side. No trading, account movement, brokerage connection, credential, or new Supabase client is included.
