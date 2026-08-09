@@ -220,3 +220,9 @@ The `/news` workspace provides Market, Watchlist, Portfolio, Company, Catalyst, 
 The bundled adapter is a scenario library, not a news feed. Every fixture is labeled **DEMO / ILLUSTRATIVE**, omits real-world event timestamps and source URLs, and makes no claim that an event happened. No news environment variable is required. Live integration must implement `NewsService`, validate/normalize responses, and reach an approved provider only through the trusted backend at `EXPO_PUBLIC_API_BASE_URL`; provider secrets remain server-side.
 
 Saved-news notes are namespaced to the signed-in user in device-local AsyncStorage. Sprint 1.9 adds no migration or manual Supabase step, and notes do not sync. Future database persistence must reuse `getSupabaseClient()` and authenticated owner-only RLS.
+
+## Sprint 2.0: fundamental analysis foundation
+
+The symbol route `/fundamentals/[symbol]` provides a premium provider-neutral workspace for company identity, growth, profitability, financial health, valuation, historical fundamentals, and the SAC score-input foundation. Watchlist and Portfolio entries open this workspace, Research links to it, and Dashboard includes a restrained snapshot. Missing values render as **Unavailable**, never zero.
+
+`src/features/fundamentals` owns typed domain contracts, safe calculation utilities, the replaceable `FundamentalAnalysisService`, request-coalescing hooks, and presentation. The bundled demo adapter is explicitly **DEMO / ILLUSTRATIVE** and deliberately returns unavailable metrics and no invented history. It is not live data and makes no recommendation. A future adapter must validate and normalize an approved provider behind `EXPO_PUBLIC_API_BASE_URL`; financial-provider keys and other privileged credentials must never enter Expo. No new Supabase client, migration, provider variable, brokerage behavior, or trading capability is introduced.

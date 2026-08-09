@@ -2,6 +2,21 @@
 
 All notable changes to Seals AI Capital are documented in this file.
 
+## Sprint 2.0 — 2026-08-09
+
+### Added
+
+- Provider-neutral fundamental domain, normalized service contract, replaceable illustrative demo adapter, deduplicated hooks, safe calculations, historical-period architecture, and configurable SAC score-input categories.
+- Fundamental workspace with explicit loading, error/retry, empty, stale, demo, and unavailable presentations plus Watchlist, Portfolio, Research, and compact Dashboard entry points.
+
+### Security
+
+- Added no live/paid provider, provider key, broker integration, trade action, Supabase client, or privileged credential. Future upstream access remains restricted to the trusted backend.
+
+### Notes
+
+- Demo responses are explicitly illustrative and deliberately contain no actual financial metrics or fabricated history. The score framework makes no Buy/Sell recommendation.
+
 ## Sprint 1.9 — 2026-08-09
 
 ### Added
