@@ -63,6 +63,44 @@ Research First.
 Profit Second.
 Protect Capital Always.
 
+## Sprint 2.6 — Catalyst & Market Context Intelligence
+
+### Architecture
+
+The catalyst module is a deterministic, provider-neutral enrichment boundary above Sprint 2.4
+scoring and Sprint 2.5 ranking. It accepts normalized catalyst feeds, market context, sector context,
+and the already-calculated opportunity signals. It may explain agreement and conflict but MUST NOT
+mutate the Composite Score or create a competing ranking engine.
+
+### Contracts and methodology
+
+- Catalyst categories encompass company, filing, earnings/guidance, capital action, analyst,
+  product, FDA/regulatory, M&A, management, dilution, buyback, dividend, split, contract, legal,
+  macro, sector, and market-wide events.
+- Event records carry upcoming/active/recent/historical phase; confirmed/unconfirmed/unknown
+  verification; available/unavailable/error availability; optional source-supplied timestamp and
+  window; scope; risk; impact; quality; and provenance.
+- Deterministic impact combines only normalized direction, magnitude, horizon, verification,
+  freshness, and data status. Confidence is bounded from 0–100 and null when evidence is unusable.
+  Language is explicitly non-causal and never forecasts a particular price move.
+- Market context models broad trend, volatility, risk regime, rates, stress, and market events.
+  Sector context separately models strength, momentum, trend, risk, catalyst activity, conflicts,
+  quality, and provenance. Neither is company fundamental or technical evidence.
+- The chronological event timeline contains only provider-supplied dates. Catalyst risks include
+  earnings, regulatory, dilution, litigation, macro, sector, event, and data uncertainty.
+
+### Integrity, security, and limitations
+
+All records preserve `REAL`, `PARTIAL`, `DEMO`, `UNAVAILABLE`, `EMPTY`, or `ERROR`. Missing trusted
+data produces `UNAVAILABLE` and no events, rather than synthetic news, dates, conditions, or a demo
+fallback. Provider errors remain visible. Every usable assessment retains provider/source metadata.
+Impact remains uncertain analytical context, not fact, advice, causation, or a trade instruction.
+
+Alert-ready and portfolio-neutral interfaces allow later use of events, upcoming windows, risks,
+status updates, and market/sector context. No notification transport is implemented. Brokerage and
+account connectivity, order execution, wallets, cryptocurrency trading, deposits, withdrawals,
+payments, trading credentials, private keys, and service-role secrets remain outside this phase.
+
 ## Version 1 Screens
 
 1. Splash Screen

@@ -1,3 +1,4 @@
+import { buildOpportunityContext } from '@/features/catalyst-intelligence';
 import type {
   QuantitativeComponentName,
   QuantitativeScoreComponent,
@@ -197,6 +198,18 @@ function build(
       : []),
   ]);
   const classification = classifyOpportunity(a.score, score(candidate, 'risk'), supported);
+  const context = candidate.catalystFeed
+    ? buildOpportunityContext(
+        candidate.catalystFeed,
+        {
+          fundamentalScore: score(candidate, 'fundamental'),
+          technicalScore: score(candidate, 'technical'),
+          classification,
+        },
+        candidate.marketContext,
+        candidate.sectorContext,
+      )
+    : undefined;
   return {
     rank: 0,
     symbol: a.symbol,
@@ -226,6 +239,13 @@ function build(
     dataStatus: opportunityStatus(a.dataStatus),
     provenance: unique(a.components.flatMap((item) => item.provenance)),
     explanation: `${a.symbol} has an overall score of ${a.score ?? 'unavailable'} and is classified as ${classification} for the ${timeframe} timeframe. Confidence is ${confidence.score ?? 'unavailable'}; signal agreement is ${agreement.label}. This is analytical intelligence, not a trade instruction or guarantee.`,
+    ...(context
+      ? {
+          context,
+          catalystAvailable: context.eventTimeline.length > 0,
+          explanation: `${a.symbol} has an overall score of ${a.score ?? 'unavailable'} and is classified as ${classification} for the ${timeframe} timeframe. Quantitative confidence is ${confidence.score ?? 'unavailable'} and signal agreement is ${agreement.label}. Catalyst evidence: ${context.catalystSummary} Market context: ${context.marketContext?.dataStatus ?? 'UNAVAILABLE'}. Sector context: ${context.sectorContext?.dataStatus ?? 'UNAVAILABLE'}. Conflicts: ${context.contextConflicts.join(' ') || 'none identified'}. Missing information: ${context.missingInformation.join(' ') || 'none reported'}. This is analytical context, not a trade instruction, causal price prediction, or guarantee.`,
+        }
+      : {}),
   };
 }
 
@@ -260,6 +280,9 @@ export function rankWatchlistOpportunities(
       companyName: item.displayName,
       requestedTimeframe: timeframe,
       supportedTimeframes: item.supportedTimeframes,
+      catalystFeed: item.catalystFeed,
+      marketContext: item.marketContext,
+      sectorContext: item.sectorContext,
     })),
     { timeframe },
   );
