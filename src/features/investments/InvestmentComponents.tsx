@@ -131,9 +131,11 @@ export function WatchlistButton({
 export function WatchlistCard({
   quotes,
   onRemove,
+  onResearch,
 }: {
   quotes: MarketQuote[];
   onRemove: (symbol: string) => void;
+  onResearch?: (symbol: string) => void;
 }) {
   return (
     <Card
@@ -145,6 +147,11 @@ export function WatchlistCard({
           <QuoteRow bordered={index > 0} quote={quote} />
           <View style={styles.rowAction}>
             <Text style={styles.status}>{quote.marketStatus.toUpperCase()}</Text>
+            {onResearch ? (
+              <Pressable onPress={() => onResearch(quote.symbol)}>
+                <Text style={styles.link}>RESEARCH</Text>
+              </Pressable>
+            ) : null}
             <WatchlistButton watched saving={false} onPress={() => onRemove(quote.symbol)} />
           </View>
         </View>
@@ -303,10 +310,12 @@ export function PortfolioRow({
   position,
   onEdit,
   onRemove,
+  onResearch,
 }: {
   position: EnrichedPosition;
   onEdit: () => void;
   onRemove: () => void;
+  onResearch?: () => void;
 }) {
   return (
     <Card
@@ -327,6 +336,11 @@ export function PortfolioRow({
         />
       </View>
       <View style={styles.actions}>
+        {onResearch ? (
+          <Pressable onPress={onResearch}>
+            <Text style={styles.link}>RESEARCH</Text>
+          </Pressable>
+        ) : null}
         <Pressable onPress={onEdit}>
           <Text style={styles.link}>EDIT</Text>
         </Pressable>

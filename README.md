@@ -195,3 +195,20 @@ Apply `supabase/migrations/20260808010000_create_watchlist_and_portfolio.sql` af
 Authenticated screens use the centralized Supabase client through a dedicated investment service and shared provider. The Watchlist supports market-service symbol search, duplicate-safe adds, removals, refresh, and explicit loading, empty, error, and retry states. Portfolio positions store only symbol, quantity, and average cost. Market value, cost basis, and unrealized returns are derived from available quotes; zero cost basis produces an unavailable percentage rather than division by zero. Dashboard Watchlist and Portfolio snapshots now reflect authenticated user records instead of static portfolio values.
 
 Supabase remains the authority for isolation: every data-access operation also includes the current user ID as defense in depth, while RLS enforces `auth.uid() = user_id`. Demo market mode remains illustrative and labeled, not live. No transaction history, brokerage connection, real-money trading, deposits, withdrawals, or AI integration is included.
+
+## Sprint 1.8: investment research foundation
+
+The symbol-driven `/research/[symbol]` workspace uses the provider-neutral `src/features/research`
+domain. Strongly typed company, quote, performance, fundamental, technical, news, thesis, risk,
+status, source, and note models flow through a replaceable `ResearchService`, deduplicated one-minute
+hook cache, and reusable presentation. Watchlist, Portfolio, and Dashboard open the same workspace
+without duplicating calculations or market data.
+
+The development adapter is explicitly **demo / illustrative**. It reuses the market-data boundary,
+leaves unsupported fields unavailable, provides no historical chart, and does not claim current news
+or AI analysis. Live adapters installed with `setResearchService` must normalize responses and call
+a trusted backend or Edge Function; provider and AI secrets never belong in Expo.
+
+Notes use a separate `ResearchNotesService` and device-local AsyncStorage partitioned by authenticated
+user ID. There is no migration or cross-device sync. A future Supabase adapter must reuse the
+centralized client and owner-only RLS.

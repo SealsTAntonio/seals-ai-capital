@@ -145,3 +145,22 @@ Authenticated users own Watchlist entries and current Portfolio positions. `publ
 Feature access follows `investment service → shared provider/hooks → reusable components → routes`. The service uses the single centralized Supabase client and explicitly scopes queries by user as defense in depth. Quotes and search continue through Sprint 1.6's `MarketDataService`; no duplicate vendor model or client is introduced.
 
 Position calculations are derived, not persisted: market value is quantity × current price; cost basis is quantity × average cost; unrealized gain/loss is market value − cost basis; and return percentage is unrealized gain/loss ÷ cost basis × 100. Missing quotes produce unavailable quote-derived metrics, and zero cost basis safely produces an unavailable percentage. Current positions are not a transaction ledger and do not represent trades or real money. The migration must be manually applied to each Supabase environment; this local repository cannot verify a live deployment.
+
+## Sprint 1.8 — Investment Research & Intelligence Foundation
+
+Research follows `ResearchService → cached hooks → reusable workspace → symbol route`. Models cover
+company identity, quotes, performance, fundamentals, technicals, news, risks, thesis, lifecycle
+(`idle`, `loading`, `ready`, `partial`, `empty`, `error`, `retrying`) and source (`demo`, `live`,
+`unavailable`). Watchlist, Portfolio, and Dashboard navigate to one route while existing providers
+retain ownership of saved records, calculations, and market snapshots.
+
+The local adapter is illustrative. It delegates quotes to the existing market service, leaves
+unsupported metrics unavailable, provides no historical chart, and labels fixture content as demo
+framework material. It does not represent AI analysis or live intelligence. Future live adapters
+must normalize responses and access privileged providers only through a trusted backend.
+
+Notes use a validated, replaceable, user-scoped contract and device-local AsyncStorage keyed by the
+authenticated user ID. No migration or manual Supabase step is required and notes do not sync. A
+future Supabase implementation must reuse the centralized client with owner-only CRUD RLS, indexes,
+and timestamps. Visual verification requires a configured Expo runtime and public Supabase values
+and was unavailable in this repository environment.
