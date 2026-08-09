@@ -16,8 +16,13 @@ declare module 'vitest' {
     toHaveBeenCalledTimes(value: number): void;
     toBeInstanceOf(value: unknown): void;
     toMatchObject(value: unknown): void;
+    toThrow(): void;
+    toContain(value: unknown): void;
     rejects: Expectation;
   }
-  export const expect: (value: unknown) => Expectation;
+  export const expect: {
+    (value: unknown): Expectation;
+    arrayContaining(value: unknown[]): unknown;
+  };
   export const vi: { spyOn<T extends object, K extends keyof T>(object: T, key: K): Expectation };
 }

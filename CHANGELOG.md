@@ -2,6 +2,19 @@
 
 All notable changes to Seals AI Capital are documented in this file.
 
+## Sprint 2.7 — 2026-08-09
+
+### Added
+
+- Provider-neutral risk factors, weighted risk assessment, scenarios, provenance, portfolio-preparation, position-sizing, opportunity/risk relationship, conflict, and trade-readiness contracts.
+- Deterministic 0–100 risk classification, explicit incomplete assessments, auditable conflict detection, and position sizing constrained only by caller-supplied account, price, stop, exposure, and concentration inputs.
+- A backward-compatible Risk & Trade Readiness section in the Market Opportunity Workspace and deterministic tests for calculation, validation, missing data, failures, conflicts, readiness, provenance, and sizing boundaries.
+
+### Security and limitations
+
+- Risk thresholds are transparent analytical heuristics, not calibrated predictions, guarantees, financial advice, or automatic Buy/Sell instructions. No live volatility, price, liquidity, portfolio, or brokerage provider is configured.
+- No brokerage connectivity, account access or movement, orders, execution, payments, wallets, credentials, secrets, migrations, or additional Supabase client was added.
+
 ## Sprint 2.6 — 2026-08-09
 
 ### Added
