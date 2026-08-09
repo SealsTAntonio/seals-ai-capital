@@ -1,23 +1,35 @@
 import {
+  adx,
   atr,
   bollingerBands,
+  ema,
   macd,
   momentum,
+  roc,
   rsi,
+  sma,
+  stochastic,
   supportResistance,
   technicalScore,
   trendDirection,
   volatility,
   volumeAnalysis,
+  vwap,
 } from './calculations';
 import type {
   MarketDataProvider,
   ScoreComponent,
   TechnicalAnalysis,
   TechnicalAnalysisService,
+  TechnicalSignal,
   Timeframe,
 } from './types';
-import { isValidTechnicalSymbol, isValidTimeframe, normalizeTechnicalSymbol } from './validation';
+import {
+  isValidCandle,
+  isValidTechnicalSymbol,
+  isValidTimeframe,
+  normalizeTechnicalSymbol,
+} from './validation';
 
 export class TechnicalAnalysisError extends Error {
   constructor(
@@ -88,7 +100,16 @@ export function createTechnicalAnalysisService(
           resistance: null,
           indicators: [],
           score: emptyScore(),
+          signals: [],
+          explanation:
+            'Technical intelligence is unavailable because historical OHLCV data is unavailable.',
+          warnings: ['No values or signals were fabricated.'],
         };
+      if (response.series.candles.some((candle) => !isValidCandle(candle)))
+        throw new TechnicalAnalysisError(
+          'The provider returned invalid historical OHLCV data.',
+          'provider-error',
+        );
       const closes = response.series.candles.map((c) => c.close),
         volumes = response.series.candles.map((c) => c.volume);
       const t = trendDirection(closes),
@@ -100,6 +121,117 @@ export function createTechnicalAnalysisService(
         mc = macd(closes),
         a = atr(response.series.candles),
         bb = bollingerBands(closes);
+      const s20 = sma(closes, 20),
+        s50 = sma(closes, 50),
+        e20 = ema(closes, 20),
+        vw = vwap(response.series.candles),
+        stoch = stochastic(response.series.candles),
+        directional = adx(response.series.candles),
+        rate = roc(closes);
+      const indicatorStatus = (calculation: { value: unknown }) =>
+        calculation.value === null ? ('unavailable' as const) : response.provenance.status;
+      const current = closes.at(-1)!;
+      const signals: TechnicalSignal[] = [];
+      const signal = (
+        id: string,
+        label: string,
+        direction: 'bullish' | 'bearish' | 'neutral',
+        explanation: string,
+      ) => signals.push({ id, label, direction, explanation });
+      if (t.value)
+        signal(
+          'trend',
+          `${t.value === 'uptrend' ? 'Bullish' : t.value === 'downtrend' ? 'Bearish' : 'Neutral'} trend`,
+          t.value === 'uptrend' ? 'bullish' : t.value === 'downtrend' ? 'bearish' : 'neutral',
+          'Price and 20/50-period moving-average structure determine this condition.',
+        );
+      if (r.value !== null && (r.value >= 70 || r.value <= 30))
+        signal(
+          'rsi',
+          r.value >= 70 ? 'Overbought' : 'Oversold',
+          r.value >= 70 ? 'bearish' : 'bullish',
+          `RSI is ${r.value.toFixed(2)}; this is a condition, not a reversal prediction.`,
+        );
+      if (m.value !== null)
+        signal(
+          'momentum',
+          m.value > 0 ? 'Bullish momentum' : m.value < 0 ? 'Bearish momentum' : 'Neutral momentum',
+          m.value > 0 ? 'bullish' : m.value < 0 ? 'bearish' : 'neutral',
+          `10-period price change is ${m.value.toFixed(2)}%.`,
+        );
+      if (mc.value)
+        signal(
+          'macd',
+          mc.value.histogram > 0
+            ? 'Bullish MACD condition'
+            : mc.value.histogram < 0
+              ? 'Bearish MACD condition'
+              : 'Neutral MACD condition',
+          mc.value.histogram > 0 ? 'bullish' : mc.value.histogram < 0 ? 'bearish' : 'neutral',
+          'Classified from the MACD histogram sign.',
+        );
+      if (s20.value !== null)
+        signal(
+          'moving-average',
+          current >= s20.value ? 'Price above SMA 20' : 'Price below SMA 20',
+          current >= s20.value ? 'bullish' : 'bearish',
+          `Last close is compared with the 20-period SMA.`,
+        );
+      if (vol.value)
+        signal(
+          'volume',
+          vol.value.condition === 'above-average'
+            ? 'Volume confirmation'
+            : 'No strong volume confirmation',
+          'neutral',
+          `Relative volume is ${vol.value.ratio.toFixed(2)}× average; direction requires price context.`,
+        );
+      if (closes.length >= 40) {
+        const previousBands = bollingerBands(closes.slice(0, -20));
+        if (bb.value && previousBands.value) {
+          const width = bb.value.upper - bb.value.lower;
+          const previousWidth = previousBands.value.upper - previousBands.value.lower;
+          if (previousWidth > 0)
+            signal(
+              'bollinger-width',
+              width > previousWidth * 1.1
+                ? 'Bollinger Band expansion'
+                : width < previousWidth * 0.9
+                  ? 'Bollinger Band contraction'
+                  : 'Stable Bollinger Band width',
+              'neutral',
+              'Current 20-period band width is compared with the preceding 20-period window.',
+            );
+        }
+      }
+      if (closes.length >= 6 && volumes.length >= 6) {
+        const priceChange = current - closes.at(-6)!;
+        const volumeChange = volumes.at(-1)! - volumes.at(-6)!;
+        if (priceChange * volumeChange < 0)
+          signal(
+            'volume-divergence',
+            'Volume divergence',
+            'neutral',
+            'Five-period price and volume changes have opposite signs; this is context, not a prediction.',
+          );
+      }
+      if (sr.value) {
+        const span = sr.value.resistance - sr.value.support;
+        if (span > 0 && (current - sr.value.support) / span <= 0.1)
+          signal(
+            'support',
+            'Support proximity',
+            'neutral',
+            'Price is within the lower 10% of its 20-period range.',
+          );
+        if (span > 0 && (sr.value.resistance - current) / span <= 0.1)
+          signal(
+            'resistance',
+            'Resistance proximity',
+            'neutral',
+            'Price is within the upper 10% of its 20-period range.',
+          );
+      }
       const components: ScoreComponent[] = [
         {
           name: 'trend',
@@ -165,29 +297,98 @@ export function createTechnicalAnalysisService(
         score: technicalScore(components),
         indicators: [
           {
+            name: 'SMA (20)',
+            status: indicatorStatus(s20),
+            value: s20.value,
+            detail: '20-period simple moving average.',
+          },
+          {
+            name: 'SMA (50)',
+            status: indicatorStatus(s50),
+            value: s50.value,
+            detail: '50-period simple moving average.',
+          },
+          {
+            name: 'EMA (20)',
+            status: indicatorStatus(e20),
+            value: e20.value,
+            detail: '20-period exponential moving average.',
+          },
+          {
             name: 'RSI (14)',
-            status: r.status,
+            status: indicatorStatus(r),
             value: r.value,
             detail: '14-period relative strength; 15 closes required.',
           },
           {
             name: 'MACD (12, 26, 9)',
-            status: mc.status,
+            status: indicatorStatus(mc),
             value: mc.value?.histogram ?? null,
             detail: 'MACD histogram; 34 closes required.',
           },
           {
             name: 'ATR (14)',
-            status: a.status,
+            status: indicatorStatus(a),
             value: a.value,
             detail: 'Average true range; 15 candles required.',
           },
           {
             name: 'Bollinger width',
-            status: bb.status,
+            status: indicatorStatus(bb),
             value: bb.value ? bb.value.upper - bb.value.lower : null,
             detail: 'Two-standard-deviation band width; 20 closes required.',
           },
+          {
+            name: 'VWAP',
+            status: indicatorStatus(vw),
+            value: vw.value,
+            detail: 'Cumulative typical-price VWAP for the returned series.',
+          },
+          {
+            name: 'Stochastic (14)',
+            status: indicatorStatus(stoch),
+            value: stoch.value?.k ?? null,
+            values: stoch.value ?? undefined,
+            detail: '%K with a three-value %D average; 16 candles required.',
+          },
+          {
+            name: 'ADX / +DI / -DI (14)',
+            status: indicatorStatus(directional),
+            value: directional.value?.adx ?? null,
+            values: directional.value ?? undefined,
+            detail: 'Trend strength and directional movement; 29 candles required.',
+          },
+          {
+            name: 'ROC (12)',
+            status: indicatorStatus(rate),
+            value: rate.value,
+            detail: '12-period rate of change; 13 closes required.',
+          },
+          {
+            name: 'Average volume (20)',
+            status: indicatorStatus(vol),
+            value: vol.value?.average ?? null,
+            detail: 'Average of the 20 observations before the latest candle.',
+          },
+          {
+            name: 'Relative volume',
+            status: indicatorStatus(vol),
+            value: vol.value?.ratio ?? null,
+            detail: 'Latest volume divided by its 20-period average.',
+          },
+        ],
+        signals,
+        explanation: `${signals.length} validated technical conditions were derived from available OHLCV history. Conditions describe the supplied timeframe and do not predict future performance.`,
+        warnings: [
+          'Technical conditions are not financial advice, trade instructions, or guarantees.',
+          ...(response.provenance.status === 'partial'
+            ? [
+                'The provider marked this historical series partial; derived intelligence may be incomplete.',
+              ]
+            : []),
+          ...(response.provenance.status === 'demo'
+            ? ['All readings are DEMO / ILLUSTRATIVE and are not live market data.']
+            : []),
         ],
       };
     },

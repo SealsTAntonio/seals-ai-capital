@@ -4,13 +4,13 @@ const unavailable = <T>(
   lookback: number,
   explanation = 'Insufficient valid history.',
 ): Calculation<T> => ({
-  status: 'insufficient-data',
+  status: 'unavailable',
   value: null,
   requiredLookback: lookback,
   explanation,
 });
 const available = <T>(value: T, lookback: number): Calculation<T> => ({
-  status: 'available',
+  status: 'real',
   value,
   requiredLookback: lookback,
 });
@@ -141,6 +141,84 @@ export function supportResistance(
   const slice = values.slice(-period);
   return available({ support: Math.min(...slice), resistance: Math.max(...slice) }, period);
 }
+export function vwap(candles: OhlcvCandle[]): Calculation<number> {
+  if (!candles.length) return unavailable(1);
+  const volume = candles.reduce((sum, candle) => sum + candle.volume, 0);
+  if (!Number.isFinite(volume) || volume <= 0)
+    return unavailable(1, 'Positive volume is required.');
+  const value = candles.reduce(
+    (sum, candle) => sum + ((candle.high + candle.low + candle.close) / 3) * candle.volume,
+    0,
+  );
+  return Number.isFinite(value) ? available(value / volume, candles.length) : unavailable(1);
+}
+export function stochastic(
+  candles: OhlcvCandle[],
+  period = 14,
+): Calculation<{ k: number; d: number }> {
+  if (candles.length < period + 2) return unavailable(period + 2);
+  const ks: number[] = [];
+  for (let end = candles.length - 2; end < candles.length; end++) {
+    const window = candles.slice(end - period + 1, end + 1);
+    const high = Math.max(...window.map((c) => c.high));
+    const low = Math.min(...window.map((c) => c.low));
+    if (high === low) return unavailable(period + 2, 'Price range is zero.');
+    ks.push(((candles[end]!.close - low) / (high - low)) * 100);
+  }
+  const latestWindow = candles.slice(-period);
+  const high = Math.max(...latestWindow.map((c) => c.high));
+  const low = Math.min(...latestWindow.map((c) => c.low));
+  if (high === low) return unavailable(period + 2, 'Price range is zero.');
+  const k = ((candles.at(-1)!.close - low) / (high - low)) * 100;
+  return available({ k, d: (ks[0]! + ks[1]! + k) / 3 }, period + 2);
+}
+export function roc(values: number[], period = 12): Calculation<number> {
+  if (values.length < period + 1 || !valid(values)) return unavailable(period + 1);
+  const base = values.at(-(period + 1))!;
+  return base === 0
+    ? unavailable(period + 1, 'ROC base is zero.')
+    : available(((values.at(-1)! - base) / base) * 100, period + 1);
+}
+export function adx(
+  candles: OhlcvCandle[],
+  period = 14,
+): Calculation<{ adx: number; plusDi: number; minusDi: number }> {
+  const needed = period * 2 + 1;
+  if (candles.length < needed) return unavailable(needed);
+  const tr: number[] = [],
+    plus: number[] = [],
+    minus: number[] = [];
+  for (let i = 1; i < candles.length; i++) {
+    const current = candles[i]!,
+      previous = candles[i - 1]!;
+    tr.push(
+      Math.max(
+        current.high - current.low,
+        Math.abs(current.high - previous.close),
+        Math.abs(current.low - previous.close),
+      ),
+    );
+    const up = current.high - previous.high,
+      down = previous.low - current.low;
+    plus.push(up > down && up > 0 ? up : 0);
+    minus.push(down > up && down > 0 ? down : 0);
+  }
+  const dx: number[] = [];
+  let plusDi = 0,
+    minusDi = 0;
+  for (let end = period; end <= tr.length; end++) {
+    const trSum = tr.slice(end - period, end).reduce((a, b) => a + b, 0);
+    if (trSum === 0) return unavailable(needed, 'True range is zero.');
+    plusDi = (plus.slice(end - period, end).reduce((a, b) => a + b, 0) / trSum) * 100;
+    minusDi = (minus.slice(end - period, end).reduce((a, b) => a + b, 0) / trSum) * 100;
+    const total = plusDi + minusDi;
+    dx.push(total === 0 ? 0 : (Math.abs(plusDi - minusDi) / total) * 100);
+  }
+  return available(
+    { adx: dx.slice(-period).reduce((a, b) => a + b, 0) / period, plusDi, minusDi },
+    needed,
+  );
+}
 export function technicalScore(components: ScoreComponent[]): TechnicalScore {
   const usable = components.filter((c) => c.available && Number.isFinite(c.score) && c.weight > 0);
   if (!usable.length)
@@ -154,7 +232,7 @@ export function technicalScore(components: ScoreComponent[]): TechnicalScore {
   const value = Math.round(usable.reduce((s, c) => s + c.score * c.weight, 0) / weight);
   return {
     value,
-    classification: value >= 65 ? 'bullish' : value <= 35 ? 'bearish' : 'neutral',
+    classification: value >= 60 ? 'bullish' : value <= 40 ? 'bearish' : 'neutral',
     components,
     explanation: `Weighted ${usable.length} of ${components.length} available components on a 0–100 scale. This is descriptive, not trading advice.`,
   };

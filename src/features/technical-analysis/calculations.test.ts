@@ -3,17 +3,21 @@ import { describe, expect, it } from 'vitest';
 
 import {
   atr,
+  adx,
   bollingerBands,
   ema,
   macd,
   momentum,
+  roc,
   rsi,
   sma,
   supportResistance,
+  stochastic,
   technicalScore,
   trendDirection,
   volatility,
   volumeAnalysis,
+  vwap,
 } from './calculations';
 import type { OhlcvCandle } from './types';
 const values = Array.from({ length: 60 }, (_, i) => 100 + i);
@@ -41,11 +45,29 @@ describe('technical calculations', () => {
     );
   });
   it('calculates volume, momentum, trend, volatility and range', () => {
-    expect(volumeAnalysis(candles.map((c) => c.volume)).status).toBe('available');
+    expect(volumeAnalysis(candles.map((c) => c.volume)).status).toBe('real');
     expect(momentum(values).value).toBeGreaterThan(0);
     expect(trendDirection(values).value).toBe('uptrend');
     expect(volatility(values).value).toBeGreaterThan(0);
     expect(supportResistance(values).value).toEqual({ support: 140, resistance: 159 });
+  });
+  it('calculates VWAP, stochastic, ADX/DI, ROC and relative volume deterministically', () => {
+    const first = {
+      vwap: vwap(candles).value,
+      stochastic: stochastic(candles).value,
+      adx: adx(candles).value,
+      roc: roc(values).value,
+      volume: volumeAnalysis(candles.map((c) => c.volume)).value,
+    };
+    expect(first).toEqual({
+      vwap: vwap(candles).value,
+      stochastic: stochastic(candles).value,
+      adx: adx(candles).value,
+      roc: roc(values).value,
+      volume: volumeAnalysis(candles.map((c) => c.volume)).value,
+    });
+    expect(first.stochastic!.k).toBeGreaterThan(50);
+    expect(first.adx!.plusDi).toBeGreaterThan(first.adx!.minusDi);
   });
   it('returns explicit insufficient states for empty or missing history', () => {
     [
@@ -60,6 +82,10 @@ describe('technical calculations', () => {
       trendDirection([]),
       volatility([]),
       supportResistance([]),
+      vwap([]),
+      stochastic([]),
+      adx([]),
+      roc([]),
     ].forEach((result) => {
       expect(result.value).toBeNull();
       expect(result.status).toBe('insufficient-data');
