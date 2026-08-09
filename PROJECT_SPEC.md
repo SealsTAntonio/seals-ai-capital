@@ -344,3 +344,29 @@ configured and no brokerage, execution, order, transaction, account movement, wa
 credential, private key, service-role secret, or additional Supabase client exists. All risk and
 readiness classifications are analytical research outputs—not guarantees, advice, automatic
 Buy/Sell instructions, or authorization to trade.
+
+## Sprint 2.9 — Signal Fusion & Decision Intelligence
+
+### Architecture and contracts
+
+The self-contained `src/features/signal-fusion` module exposes typed component, agreement, conflict, weight, quality, provenance, timeframe, readiness, classification, confidence, context, and final-assessment contracts. Its `DecisionContext` references authoritative Sprint 2.4–2.8 domain objects. Fusion is orchestration and interpretation only: composite, opportunity, catalyst, risk, portfolio, technical, and fundamental calculations remain owned upstream.
+
+### Deterministic methodology
+
+Each supplied component is represented as supportive, neutral, opposing, or unavailable with its evidence, timeframe, status, and provenance. Default weights are explicit constants and may be replaced with validated values from zero through one. An unavailable component has zero applied contribution, its configured weight remains visible, and its weight is never reassigned. Values outside zero through 100, non-finite values, invalid confidence, and invalid weights produce a validation error rather than normalization.
+
+Agreement requires at least two independently supportive components and records the component set, code, evidence, importance, timeframe, provenance, and resolution. Conflict rules explicitly cover opportunity/excessive-risk, catalyst/technical divergence, composite/portfolio-fit divergence, degraded opportunity quality, upstream critical risk and portfolio conflicts, and supplied cross-timeframe divergence. Conflicts remain open and cannot be silently removed.
+
+Alignment depends on the count and direction of usable components plus critical conflicts and critical-input gates. Research classifications never imply execution. High conviction requires complete critical evidence, full alignment, adequate confidence, and no critical conflict; demo evidence cannot receive that classification. Missing critical opportunity or risk data yields insufficient data, while a completely unavailable input set yields unavailable.
+
+Confidence is completeness-based, bounded from zero through 100, and has an inspectable ledger. Partial, stale, demo, and conflicting evidence reduce it; full alignment adds only five points. Missing data can never increase confidence. The result preserves the primary opportunity timeframe and reports contradictions among explicitly supplied intraday, short-term, swing, medium-term, and long-term context rather than averaging them away.
+
+### Readiness, presentation, and limitations
+
+Readiness distinguishes ready for research, conditional, watch, not ready, and insufficient data, and contains a literal `executableInstruction: false` boundary. The Market Opportunity Workspace accepts an optional symbol-keyed fusion result and renders classification, confidence, timeframe, alignment, impacts, supporting/opposing evidence, quality, readiness, conflicts, explanation, and provenance without changing legacy props.
+
+The layer is limited by upstream completeness and quality. It does not obtain data, invent missing evidence, silently select demo data, reconcile contradictory provider records, predict returns, or replace analyst judgment.
+
+### Security boundary
+
+Sprint 2.9 adds no brokerage API or credentials, order/transaction execution, automated trading, account or wallet access, payment processing or credentials, private keys, secret storage, privileged Supabase credentials, or external trading automation. All outputs are analytical research classifications.

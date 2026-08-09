@@ -10,6 +10,7 @@ import type {
   PositionSizingResult,
   RiskAssessment,
 } from '@/features/risk-intelligence';
+import { SignalFusionSection, type SignalFusionAssessment } from '@/features/signal-fusion';
 import { theme } from '@/theme';
 
 import type { RankedOpportunity } from './types';
@@ -69,6 +70,7 @@ export function OpportunityWorkspace({
   view = 'top',
   riskIntelligence = {},
   portfolioIntelligence,
+  signalFusionIntelligence,
 }: {
   opportunities: RankedOpportunity[];
   view?: OpportunityView;
@@ -83,6 +85,8 @@ export function OpportunityWorkspace({
   >;
   /** Optional Sprint 2.8 workspace section; existing callers remain unchanged. */
   portfolioIntelligence?: PortfolioAssessment;
+  /** Optional Sprint 2.9 result keyed by symbol; no existing caller must provide it. */
+  signalFusionIntelligence?: Record<string, SignalFusionAssessment>;
 }) {
   const visible = select(opportunities, view);
   return (
@@ -145,6 +149,14 @@ export function OpportunityWorkspace({
       {portfolioIntelligence ? (
         <PortfolioIntelligenceSection assessment={portfolioIntelligence} />
       ) : null}
+      {visible.map((item) =>
+        signalFusionIntelligence?.[item.symbol] ? (
+          <SignalFusionSection
+            key={`fusion-${item.symbol}-${item.timeframe}`}
+            assessment={signalFusionIntelligence[item.symbol]!}
+          />
+        ) : null,
+      )}
     </View>
   );
 }
