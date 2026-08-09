@@ -36,12 +36,14 @@ npm run check
 Expo inlines variables beginning with `EXPO_PUBLIC_` into the application bundle. Copy
 `.env.example` to `.env.local` and configure:
 
-| Variable                        | Purpose                                                                              |
-| ------------------------------- | ------------------------------------------------------------------------------------ |
-| `EXPO_PUBLIC_SUPABASE_URL`      | Public URL for the Supabase project.                                                 |
-| `EXPO_PUBLIC_SUPABASE_ANON_KEY` | Supabase publishable or legacy anonymous key. This must never be a service-role key. |
-| `EXPO_PUBLIC_API_BASE_URL`      | Trusted application backend or Supabase Edge Functions base URL.                     |
-| `EXPO_PUBLIC_MARKET_DATA_MODE`  | Public adapter selection. Use `demo`; `backend` is reserved for a future adapter.    |
+| Variable                            | Purpose                                                                              |
+| ----------------------------------- | ------------------------------------------------------------------------------------ |
+| `EXPO_PUBLIC_SUPABASE_URL`          | Public URL for the Supabase project.                                                 |
+| `EXPO_PUBLIC_SUPABASE_ANON_KEY`     | Supabase publishable or legacy anonymous key. This must never be a service-role key. |
+| `EXPO_PUBLIC_API_BASE_URL`          | Trusted application backend or Supabase Edge Functions base URL.                     |
+| `EXPO_PUBLIC_MARKET_DATA_MODE`      | Public adapter selection. Use `demo`; `backend` is reserved for a future adapter.    |
+| `EXPO_PUBLIC_FUNDAMENTAL_DATA_MODE` | Select `demo` (illustrative) or `sec` (real SEC filings).                            |
+| `EXPO_PUBLIC_SEC_USER_AGENT`        | Public SEC request identification (`app/version contact-email`), not a credential.   |
 
 OpenAI must be called by the trusted backend identified by `EXPO_PUBLIC_API_BASE_URL`. **Never
 store an OpenAI API key in the application or in an `EXPO_PUBLIC_` variable.** The API service in
@@ -226,3 +228,13 @@ Saved-news notes are namespaced to the signed-in user in device-local AsyncStora
 The symbol route `/fundamentals/[symbol]` provides a premium provider-neutral workspace for company identity, growth, profitability, financial health, valuation, historical fundamentals, and the SAC score-input foundation. Watchlist and Portfolio entries open this workspace, Research links to it, and Dashboard includes a restrained snapshot. Missing values render as **Unavailable**, never zero.
 
 `src/features/fundamentals` owns typed domain contracts, safe calculation utilities, the replaceable `FundamentalAnalysisService`, request-coalescing hooks, and presentation. The bundled demo adapter is explicitly **DEMO / ILLUSTRATIVE** and deliberately returns unavailable metrics and no invented history. It is not live data and makes no recommendation. A future adapter must validate and normalize an approved provider behind `EXPO_PUBLIC_API_BASE_URL`; financial-provider keys and other privileged credentials must never enter Expo. No new Supabase client, migration, provider variable, brokerage behavior, or trading capability is introduced.
+
+## Sprint 2.1: real fundamental data integration
+
+Fundamental analysis now follows `FundamentalDataProvider → FundamentalAnalysisService → cached hooks → FundamentalWorkspace`. Set `EXPO_PUBLIC_FUNDAMENTAL_DATA_MODE=sec` and provide the public, identifying `EXPO_PUBLIC_SEC_USER_AGENT` requested by SEC fair-access guidance to retrieve real U.S. issuer facts from the SEC EDGAR ticker directory and XBRL Company Facts APIs. The default remains `demo`; it is visibly illustrative and is never used as fallback when an SEC lookup fails.
+
+The SEC adapter resolves ticker to CIK and contains all source concepts at its normalization boundary. It retains CIK, fiscal/reporting period, filing date, form, source URL, provider, retrieval time, annual history, discrete quarterly history where identifiable, and per-metric availability. Latest-filed duplicates take precedence. Missing, unsupported, non-finite, and zero-denominator inputs remain unavailable, while valid negative values are preserved.
+
+Same-symbol requests are coalesced and snapshots are cached for 15 minutes; ticker identity is cached for 24 hours. There is no polling. Retrieval time and freshness are visible. SEC failures produce an error with retry, unknown tickers produce an empty state, and incomplete filings are labeled **REAL DATA • PARTIAL**. No real-data failure silently substitutes demo data.
+
+SEC filings are not real-time market prices and may be amended, delayed, differently tagged, or incomplete. Market-capitalization and price-derived metrics remain unavailable unless the separate market-data architecture supplies a real compatible value. Sprint 2.1 does **not** provide or guarantee real-time prices. Future adapters implement `FundamentalDataProvider`; credentialed providers must run behind a trusted backend. This sprint adds no Supabase client, migration, brokerage connection, trading, or privileged credential.

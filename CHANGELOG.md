@@ -2,6 +2,24 @@
 
 All notable changes to Seals AI Capital are documented in this file.
 
+## Sprint 2.1 — 2026-08-09
+
+### Added
+
+- A provider-neutral `FundamentalDataProvider` and real SEC EDGAR/XBRL Company Facts adapter with ticker-to-CIK resolution, provenance, annual history, and reliable discrete-quarter history.
+- Explicit real, partial, demo, unavailable, empty, error/retry, freshness, filing, provider, and CIK presentation in the existing workspace.
+- Fifteen-minute snapshot caching, request coalescing, and a 24-hour ticker-directory cache without polling.
+
+### Changed
+
+- Connected Sprint 2.0 growth, margin, ROE, leverage, net debt, and free-cash-flow calculations to real filing inputs while preserving nulls and negative values.
+- Added selectable `demo` and `sec` modes. Real failures never fall back to illustrative data.
+
+### Security and limitations
+
+- Added no provider secret, service-role key, brokerage/trading capability, Supabase client, or migration. Future credentialed providers must run behind a trusted backend.
+- SEC coverage and taxonomy usage vary by issuer. Unsupported concepts remain unavailable. Filed fundamentals are not guaranteed real-time prices, and price-derived metrics require separate real market data.
+
 ## Sprint 2.0 — 2026-08-09
 
 ### Added

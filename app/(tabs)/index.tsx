@@ -63,13 +63,21 @@ export default function DashboardScreen() {
                 router.push(`/fundamentals/${investments.watchlist[0]?.symbol ?? 'SPY'}`)
               }
             >
-              <Text style={styles.confidence}>DEMO • SCORE FOUNDATION</Text>
+              <Text style={styles.confidence}>
+                {fundamentals.data?.environment === 'real'
+                  ? 'REAL • SEC EDGAR'
+                  : 'DEMO • ILLUSTRATIVE'}
+              </Text>
               <Text style={styles.insightTitle}>
-                {fundamentals.loading ? 'Loading framework…' : 'Metrics unavailable'}
+                {fundamentals.loading
+                  ? 'Loading fundamentals…'
+                  : fundamentals.data?.dataStatus === 'partial'
+                    ? 'Partial filing data available'
+                    : 'Metrics unavailable'}
               </Text>
               <Text style={styles.detail}>
-                Growth, profitability, valuation, and financial strength remain explicitly
-                unavailable until a trusted provider is connected.
+                Missing filing metrics and market-price-derived values remain explicitly
+                unavailable.
               </Text>
               <Text style={styles.researchLink}>OPEN FUNDAMENTALS →</Text>
             </Pressable>
