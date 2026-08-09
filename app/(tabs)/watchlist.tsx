@@ -57,7 +57,7 @@ export default function WatchlistScreen() {
       ) : investments.watchlistQuotes && investments.watchlistQuotes.length > 0 ? (
         <WatchlistCard
           quotes={investments.watchlistQuotes}
-          onResearch={(symbol) => router.push(`/fundamentals/${symbol}`)}
+          onResearch={(symbol) => router.push(`/technical/${symbol}`)}
           onRemove={(symbol) => void investments.removeFromWatchlist(symbol)}
         />
       ) : (

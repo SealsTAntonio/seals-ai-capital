@@ -186,3 +186,21 @@ All notable changes to Seals AI Capital are documented in this file.
 
 - Dashboard values are static demonstration content. No APIs, authentication, Supabase queries, or
   OpenAI calls were added.
+
+## Sprint 2.2 — 2026-08-09
+
+### Added
+
+- Strongly typed technical-analysis domain, symbol/timeframe/candle validation, provider-neutral market-data adapter boundary, explicit five-state provenance, bounded cache, and in-flight request deduplication.
+- Deterministic SMA, EMA, RSI, MACD, ATR, Bollinger Bands, volume, momentum, trend, volatility, support/resistance, and transparent weighted scoring calculations with explicit insufficient-data results.
+- Symbol and timeframe technical workspace with loading, empty/unavailable, error/retry, real, partial, demo, freshness, provenance, indicator, score, and explanation presentations; connected from Dashboard, Watchlist, Portfolio, and Research.
+- Automated tests for calculations, missing history, validation, provider errors, status preservation, scoring, and cache behavior.
+
+### Security
+
+- Added no Supabase client, service-role key, market-provider secret, brokerage/trading credential, order execution, or financial transaction. Future credentialed market data must traverse a trusted backend or Edge Function.
+
+### Notes
+
+- No trusted historical candle provider is configured in this sprint. The default workspace is explicitly unavailable; it never creates or presents fabricated live candles, prices, indicators, or signals and never silently falls back to demo after an error.
+- Demo provenance is supported for explicitly installed illustrative fixtures, but no default candle fixture pretends to be live. Technical classifications and scores are descriptive, not Buy/Sell recommendations or profit guarantees.
