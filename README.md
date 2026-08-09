@@ -212,3 +212,11 @@ a trusted backend or Edge Function; provider and AI secrets never belong in Expo
 Notes use a separate `ResearchNotesService` and device-local AsyncStorage partitioned by authenticated
 user ID. There is no migration or cross-device sync. A future Supabase adapter must reuse the
 centralized client and owner-only RLS.
+
+## Sprint 1.9: news and catalyst intelligence foundation
+
+The `/news` workspace provides Market, Watchlist, Portfolio, Company, Catalyst, and Saved News views; `/news/[symbol]` is the shared symbol workspace linked from Research. Normalized contracts and cached hooks sit behind a replaceable `NewsService`. Cards obtain market context only from existing market hooks, while personalized filters consume the authenticated investment provider and preserve its centralized Supabase client, explicit owner filtering, and database RLS.
+
+The bundled adapter is a scenario library, not a news feed. Every fixture is labeled **DEMO / ILLUSTRATIVE**, omits real-world event timestamps and source URLs, and makes no claim that an event happened. No news environment variable is required. Live integration must implement `NewsService`, validate/normalize responses, and reach an approved provider only through the trusted backend at `EXPO_PUBLIC_API_BASE_URL`; provider secrets remain server-side.
+
+Saved-news notes are namespaced to the signed-in user in device-local AsyncStorage. Sprint 1.9 adds no migration or manual Supabase step, and notes do not sync. Future database persistence must reuse `getSupabaseClient()` and authenticated owner-only RLS.
