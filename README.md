@@ -168,6 +168,33 @@ boundary; provider keys and service credentials belong only in server-side secre
 
 ## Integration boundaries
 
+## Sprint 2.8: portfolio intelligence and allocation
+
+`src/features/portfolio-intelligence` is the provider-neutral analytical layer above the existing
+quantitative, ranking, catalyst, and risk outputs. A snapshot contains only explicitly supplied
+holdings. The engine values a position from supplied notional, or derives notional from supplied
+quantity and reference price; every result labels itself `SUPPLIED`, `DERIVED`, `UNAVAILABLE`, or
+`INVALID` and lists its source inputs. Long, short, gross, net, position, sector, asset, opportunity,
+risk, catalyst, and timeframe exposure remain deterministic.
+
+Concentration bands are transparent descriptive thresholds: below 20% low, 20–under 30% moderate,
+30–under 50% high, and 50% or above very high. Diversification assesses only available holdings,
+sector, asset, direction, risk, catalyst, and timeframe dimensions. Correlation is unavailable
+unless coefficients are supplied; it is never inferred. Risk utilization and remaining capacity
+exist only when the caller supplies a positive risk budget. Allocation gaps exist only for supplied
+targets. Portfolio fit preserves the upstream rank and score and adds contextual concentration,
+diversification, catalyst, timeframe, and risk observations.
+
+The workspace can optionally render snapshot, exposure, concentration, diversification, budget,
+conflict, fit, allocation, readiness, quality, provenance, and explanation sections without
+changing older consumers. Quality states (`REAL`, `PARTIAL`, `DEMO`, `UNAVAILABLE`, `ERROR`,
+`MISSING`, `STALE`) and deduplicated provenance flow through the assessment. There is no fallback
+portfolio, price, correlation, target, or budget.
+
+This feature has no brokerage/account provider, order execution, payment, wallet, private-key,
+secret, transaction, or automated-trading capability. Future providers may normalize user-supplied
+or trusted-backend data into the contracts, but must remain separate from domain calculations.
+
 ## Sprint 2.6: catalyst and market context intelligence
 
 Sprint 2.6 adds `src/features/catalyst-intelligence`, a provider-neutral context layer that consumes

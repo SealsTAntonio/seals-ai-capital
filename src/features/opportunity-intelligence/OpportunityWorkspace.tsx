@@ -1,6 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 import { Card, EmptyState, SectionTitle } from '@/components';
+import {
+  PortfolioIntelligenceSection,
+  type PortfolioAssessment,
+} from '@/features/portfolio-intelligence';
 import type {
   PositionSizingInput,
   PositionSizingResult,
@@ -64,6 +68,7 @@ export function OpportunityWorkspace({
   opportunities,
   view = 'top',
   riskIntelligence = {},
+  portfolioIntelligence,
 }: {
   opportunities: RankedOpportunity[];
   view?: OpportunityView;
@@ -76,6 +81,8 @@ export function OpportunityWorkspace({
       positionSizingResult?: PositionSizingResult;
     }
   >;
+  /** Optional Sprint 2.8 workspace section; existing callers remain unchanged. */
+  portfolioIntelligence?: PortfolioAssessment;
 }) {
   const visible = select(opportunities, view);
   return (
@@ -135,6 +142,9 @@ export function OpportunityWorkspace({
           </Card>
         ))
       )}
+      {portfolioIntelligence ? (
+        <PortfolioIntelligenceSection assessment={portfolioIntelligence} />
+      ) : null}
     </View>
   );
 }

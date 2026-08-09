@@ -63,6 +63,33 @@ Research First.
 Profit Second.
 Protect Capital Always.
 
+## Sprint 2.8 — Portfolio Intelligence & Allocation
+
+### Architecture and methodology
+
+The portfolio domain consumes and references Sprint 2.4–2.7 assessments without mutation or
+recalculation. Its pure engine validates normalized snapshots, distinguishes supplied/derived/
+unavailable values, retains source-input lineage, and produces exposure, concentration,
+diversification, explicit-budget risk, supplied-target allocation, opportunity fit, conflicts, and
+readiness. Concentration bands (20%, 30%, 50%) and diversification count/maximum-weight rules are
+deterministic and descriptive rather than forecasts or guarantees. No composite portfolio score is
+created.
+
+Conflict evidence and open resolution state are emitted for concentration, missing risk budget,
+incomplete positions, unavailable correlation, and directional imbalance. Resolutions are never
+fabricated. Readiness uses completeness, quality, concentration, and conflict severity, and remains
+research/review status—not authorization to transact. Correlation, target weights, holdings,
+prices, and acceptable risk budgets are never synthesized.
+
+### Integrity and integration boundary
+
+All results preserve seven-state portfolio data quality and deduplicated provider/source
+provenance. The optional workspace and opportunity-card contract enrich existing interfaces while
+remaining backward compatible. Provider adapters may be added later only as normalization
+boundaries. Brokerage and trading APIs, account access or balances, credentials, payments,
+wallets, private keys, secrets, transactions, order execution, and automated trading are explicitly
+outside scope.
+
 ## Sprint 2.6 — Catalyst & Market Context Intelligence
 
 ### Architecture

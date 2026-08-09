@@ -100,6 +100,18 @@ export interface RankedOpportunity {
   explanation: string;
   /** Sprint 2.6 enrichment. Optional to preserve Sprint 2.5 consumers. */
   context?: OpportunityContext;
+  /** Optional Sprint 2.8 enrichment; upstream rank and score remain authoritative. */
+  portfolioContext?: {
+    fit?: string;
+    concentrationImpact?: string;
+    riskContribution?: number | null;
+    sectorImpact?: string;
+    diversificationImpact?: string;
+    catalystOverlap?: boolean | null;
+    timeframeOverlap?: boolean | null;
+    conflict?: string | null;
+    readiness?: string;
+  };
 }
 
 export interface OpportunityRankingOptions {
